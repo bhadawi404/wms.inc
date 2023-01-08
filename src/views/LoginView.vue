@@ -2,57 +2,61 @@
 
     <div class="container-fluid">
         <form @submit.prevent="login">
-        <div class="row">
-            <div class="col-sm-6 px-0-custom d-none d-sm-block">
-                <img src="../assets/icon-login.svg" alt="login image" class="login-img">
-            </div>
-            <div class="col-sm-6 login-section-wrapper">
-                <nav class="navbar bg-body-tertiary">
-                    <div class="container-fluid">
-                        <img src="../assets/Logo.svg" alt="" class="src">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown"
-                                data-bs-display="static" aria-expanded="false">
-                                ENG
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-lg-end">
-                                <li><button class="dropdown-item" type="button">ID</button></li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-                <br />
-                <br />
-
-                <div class="container text-start">
-                    <div class="row align-items-start">
-                        <h2 style="color: #1B275F;">Login</h2>
-                    </div>
-                    <div class="row align-items-start">
-                        <span class="mb-2" style="color: #4A4E69;">Please enter your email and password</span>
-                        
-                    </div>
-                    <div v-if="errors.wrong_credential" class="alert alert-danger mb-2" role="alert">
-                            {{ errors.wrong_credential }}
-                        </div>
+            <div class="row">
+                <div class="col-sm-6 px-0-custom d-none d-sm-block">
+                    <img src="../assets/icon-login.svg" alt="login image" class="login-img">
                 </div>
-                    
+                <div class="col-sm-6 login-section-wrapper">
+                    <nav class="navbar bg-body-tertiary">
+                        <div class="container-fluid">
+                            <img src="../assets/Logo.svg" alt="" class="src">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown"
+                                    data-bs-display="static" aria-expanded="false">
+                                    ENG
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-lg-end">
+                                    <li><button class="dropdown-item" type="button">ID</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <br />
+                    <br />
+
                     <div class="container text-start">
                         <div class="row align-items-start">
-                            <label class="mb-1">Email Address</label>
-                            <div class="inner-addon left-addon mb-4">
-                                <i class="bi bi-envelope"></i>
-                                <input type="text" class="form-control" placeholder="yourmail@domain.com" id="email" v-model="email"/>
-                                <small v-if="errors.email" class="text-danger">{{ errors.email }}</small>
-                            </div>
+                            <h2 style="color: #1B275F; font-family: Inter;">Login</h2>
                         </div>
-                        <div class="row align-items-start">
-                            <label class="mb-1">Password</label>
-                            <div class="inner-addon left-addon mb-4">
-                                <i class="bi bi-lock"></i>
-                                <input type="password" class="form-control" placeholder="8+ letters and numbers" id="password" v-model="password"/>
-                                <small v-if="errors.password" class="text-danger">{{ errors.password }}</small>
+                        <div class="row align-items-start mb-2">
+                            <span class="mb-2" style="color: #4A4E69;">Please enter your email and password</span>
+
+                        </div>
+                        <div v-if="errors.wrong_credential" class="alert alert-danger mb-2" role="alert">
+                            {{ errors.wrong_credential }}
+                        </div>
+                    </div>
+
+                    <div class="container text-start">
+                        <div class="row align-items-start mb-3">
+                            <label class="mb-1">Email Address</label>
+                            <div class="inner-addon left-addon mb-1">
+                                <i class="bi bi-envelope"></i>
+                                <input type="text" class="form-control" placeholder="yourmail@domain.com" id="email"
+                                    v-model="email" />
+
                             </div>
+                            <small v-if="errors.email" class="text-danger">{{ errors.email }}</small>
+                        </div>
+                        <div class="row align-items-start mb-3">
+                            <label class="mb-1">Password</label>
+                            <div class="inner-addon left-addon mb-1">
+                                <i class="bi bi-lock"></i>
+                                <input type="password" class="form-control" placeholder="8+ letters and numbers"
+                                    id="password" v-model="password" />
+
+                            </div>
+                            <small v-if="errors.password" class="text-danger">{{ errors.password }}</small>
                         </div>
                         <div class="d-flex mb-5 align-items-center">
                             <div class="col-md-8">
@@ -67,78 +71,75 @@
 
                         </div>
                     </div>
-                
-                <button type="submit" class="btn btn-block btn-login">Login</button>
+
+                    <button type="submit" class="btn btn-block btn-login">Login</button>
+
+                </div>
 
             </div>
-
-        </div>
         </form>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
-
-
 export default {
-
     name: "LoginView",
-    data(){
-        return{
-            email:"",
-            password:"",
-            errors:{
-                email:"",
-                password:"",
-                wrong_credential:""
+    data() {
+        return {
+            email: "",
+            password: "",
+            errors: {
+                email: "",
+                password: "",
+                wrong_credential: ""
             }
         }
     },
-    methods:{
-        is_valid(){
-            let valid= true;
-            if(!this.email){
-                this.errors.email="The field cannot be blank";
+    methods: {
+        is_valid() {
+            let valid = true;
+            if (!this.email) {
+                this.errors.email = "The field cannot be blank";
             }
-            else{
-                this.errors.email="";
+            else {
+                this.errors.email = "";
             }
-            if(!this.password){
-                this.errors.password="The field cannot be blank";
+            if (!this.password) {
+                this.errors.password = "The field cannot be blank";
             }
-            else{
-                this.errors.password="";
+            else {
+                this.errors.password = "";
             }
-            if(this.errors.email || this.errors.password){
+            if (this.errors.email || this.errors.password) {
                 valid = false;
             }
             return valid;
         },
-        login(){
-            if(this.is_valid()){
-                const url ='/user/login/';
+        login() {
+            if (this.is_valid()) {
+                const url = '/user/login/';
                 // eslint-disable-next-line no-undef
-                axios.post(url, {email:this.email, password:this.password})
-                .then(response=>{
-                    console.log(response.data);
-                    this.$store.commit('setToken', response.data)
-                    this.email = "";
-                    this.password="";
-                    this.$router.replace({ name: "home"});
-                })
-                .catch(error=> {
-                    if(error.response.data.msg){
-                        this.errors.wrong_credential = error.response.data.msg;
-                    }
-                    if(error.response.data.email){
-                        this.errors.wrong_credential = error.response.data.email[0];
-                    }
-                })
+                axios.post(url, { email: this.email, password: this.password })
+                    .then(response => {
+                        console.log(response.data);
+                        this.$store.commit('setToken', response.data)
+                        this.email = "";
+                        this.password = "";
+                        this.$router.replace({ name: "home" });
+                    })
+                    .catch(error => {
+                        if (error.response.data.msg) {
+                            this.errors.wrong_credential = error.response.data.msg;
+                        }
+                        if (error.response.data.email) {
+                            this.errors.wrong_credential = error.response.data.email[0];
+                        }
+                    })
             }
         }
     }
-    
+
 };
 </script>
 <style>

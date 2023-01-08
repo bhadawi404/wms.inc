@@ -26,4 +26,9 @@ export default {
   src: local("Plus_Jakarta_Sans"),
    url(fonts/Plus_Jakarta_Sans/PlusJakartaSans-VariableFont_wght.ttf) format("truetype");
 }
+@font-face {
+  font-family: "Inter";
+  src: local("Inter"),
+   url(fonts/Inter/Inter-VariableFont_slnt,wght.ttf) format("truetype");
+}
 </style>
