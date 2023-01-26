@@ -1,68 +1,61 @@
 <template>
-
-    <section id="hero">
-        <div class="container text-start">
-            <div class="row align-items-start mb-1">
-                <div class="col-4 offset-1 my-auto">
-                    <h1 style="font-weight: bold;">Hi, Peeps!</h1>
+    <div class="container">
+        <section id="hero" class="barcodeapp_select">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-6 me-auto">
+                    <h1>Hi, Peeps!</h1>
                     <h2>Today is a beautiful day</h2>
                 </div>
-                <div class="col-5 ">
-                    <img src="../assets/icon-login.svg" width="400px" height="400px" alt="" class="src">
+                <div class="col-6 ms-auto text-end">
+                    <img src="/assets/images/icon-login.svg" width="400px" height="400px" alt="" class="src">
                 </div>
             </div>
-        </div>
-        <div class="container text-start">
-            <div class="row align-items-start mb-3 ">
-            <div class="col-md-4 my-auto">
-                <div class="info-box-2 bg-indigo">
-                    <div class="img-icon">
-                        <img src="../assets/setting.svg" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="text">Master Parts</div>
-                    </div>
-                    <div class="img-icon-right">
-                        <a href=""><img src="../assets/show.svg" alt=""></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 my-auto">
-                <div class="info-box-2 bg-indigo">
-                    <div class="img-icon">
-                        <img src="../assets/barcode.svg" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="text">Scan Barcode</div>
-                    </div>
-                    <div class="img-icon-right">
-                        <a href=""><img src="../assets/show.svg" alt=""></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 my-auto">
-                <div class="info-box-2 bg-indigo">
-                    <div class="img-icon">
-                        <img src="../assets/tasksquare.svg" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="text">Stock Take</div>
-                    </div>
-                    <div class="img-icon-right">
-                        <a href=""><img src="../assets/show.svg" alt=""></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-        
-    </section>
+        </section>
     
-        
-        
-
-
-    
+        <section id="hero" class="barcode_infobox">
+            <div class="row align-items-start">
+                <div class="col-md-4 my-auto">
+                    <router-link to="/master-part" class="text-decoration-none">
+                        <div class="info-box-2 bg-indigo d-flex align-items-center justify-content-center">
+                            <div class="img-icon">
+                                <img src="/assets/images/setting.svg" alt="">
+                            </div>
+                            <div class="content_text">Master Parts</div>
+                            <div class="img-icon-right">
+                                <img src="/assets/images/show.svg" alt="">
+                            </div>
+                        </div>
+                    </router-link>
+                </div>
+                <div class="col-md-4 my-auto">
+                    <router-link to="/scan-barcode" class="text-decoration-none">
+                        <div class="info-box-2 bg-indigo d-flex align-items-center justify-content-center">
+                            <div class="img-icon">
+                                <img src="/assets/images/barcode.svg" alt="">
+                            </div>
+                            <div class="content_text">Scan Barcode</div>
+                            <div class="img-icon-right">
+                               <img src="/assets/images/show.svg" alt="">
+                            </div>
+                        </div>
+                    </router-link>
+                </div>
+                <div class="col-md-4 my-auto">
+                    <router-link to="/stock-take" class="text-decoration-none">
+                        <div class="info-box-2 bg-indigo d-flex align-items-center justify-content-center">
+                            <div class="img-icon">
+                                <img src="/assets/images/tasksquare.svg" alt="">
+                            </div>
+                            <div class="content_text">Stock Take</div>
+                            <div class="img-icon-right">
+                                <img src="/assets/images/show.svg" alt="">
+                            </div>
+                        </div>
+                    </router-link>
+                </div>
+            </div>            
+        </section>  
+    </div>
 </template>
 
 <script>
@@ -72,55 +65,6 @@ export default {
 
 }
 </script>
-<style>
-#hero {
-    min-height: 50vh;
-}
 
-.info-box-2 {
-    box-shadow: 0 2px 10px rgb(0 0 0 / 20%);
-    height: 80px;
-    display: flex;
-    cursor: default;
-    background-color: #fff;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 30px;
-    border-radius: 8px;
-}
-
-.bg-indigo {
-    background-color: #283A8F !important;
-    color: #fff;
-}
-
-.info-box-2 .img-icon {
-    display: inline-block;
-    text-align: center;
-    width: 80px;
-    top: 10.67%;
-    position: absolute;
-}
-.info-box-2 .img-icon-right {
-    display: inline-block;
-    text-align: right;
-    width: 250px;
-    top: 30.67%;
-    position: absolute;
-}
-
-.info-box-2 .content {
-    display: inline-block;
-    padding: 10px 70px;
-}
-
-.info-box-2 .content .text {
-    font-family: 'Inter';
-    font-weight: 600;
-    font-size: 20px;
-    margin-top: 11px;
-    color: rgb(255, 255, 255);
-}
-</style>
 
 

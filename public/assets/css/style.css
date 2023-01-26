@@ -1,0 +1,444 @@
+body {
+    font-family: "Karla", sans-serif;
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+/*--------------------------------------*/
+.login-section .left-login-img {
+    width: calc(100% - 600px); 
+    height: 100vh;
+    background-color: #F9F9F9;
+}
+.login-section .login-section-wrapper {
+    padding: 27px 50px;
+    background-color: #fff;
+    width: 600px;
+}
+.login-section-wrapper .btn-default{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color: #1E1F2A;
+    padding: 7px 15px;
+    border: none;
+}
+.login-section-wrapper .dropdown-menu li:first-child:hover .dropdown-item{
+    border-radius: 0.375rem !important;
+}
+.login-section-wrapper .dropdown-menu li:last-child:hover .dropdown-item{
+    border-radius: 0.375rem !important;
+}
+.dropdown-toggle::after{
+    content: '';
+    background: url(../images/downarrow.svg);
+    border: none !important;
+    background-size: 100%;
+    width: 10px;
+    height: 5px;
+}
+.login-form{
+    margin-top: 90px;
+    padding: 0 30px;
+    font-family: 'Inter';
+}
+.login-form h2{
+    font-weight: 600;
+    font-size: 40px;
+    color: #1B275F;
+}
+.login-form p{
+    font-weight: 400;
+    font-size: 20px;
+    color: #4A4E69;
+}
+.login-form label{
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 500;
+    font-size: 16px;
+    color: #3A4B53;
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+.login-form .form-input{
+    height: 48px;
+    background: #FAFAFA;
+    border: 1px solid #A0B1B9;
+    border-radius: 8px;
+}
+.login-form .input-group-text{
+    border-radius: 8px;
+    border: none;
+    background: #FAFAFA;
+    padding: 6px 17px;
+}
+.login-form .form-input .form-control{
+    border: none; 
+    padding-left: 0px; 
+    padding-right: 17px; 
+    color: #3A4B53;
+    font-family: 'Plus Jakarta Sans';
+}
+.form-control:focus {box-shadow: none !important;}
+.login-form .form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #A0B1B9;
+    font-weight: 400;
+    font-size: 16px;
+    opacity: 1; /* Firefox */
+}
+  
+.login-form .form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #A0B1B9;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.login-form .form-control::-ms-input-placeholder { /* Microsoft Edge */
+    color: #A0B1B9;
+    font-weight: 400;
+    font-size: 16px;
+}
+.login-form label.form-check-label{
+    color: #607D8B;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 28px;
+    padding-left: 10px;
+    font-family: 'Plus Jakarta Sans';
+}
+.login-form a.forgot-password-link {
+    color: #3955D3;
+    font-size: 14px;
+    font-family: 'Plus Jakarta Sans';
+}
+.form-switch .form-check-input{
+    width: 36px !important;
+    height: 24px;
+    background-color: #DADADA;
+    background-image: url(../images/Button.png) !important;
+    background-position: left 2px !important;
+    border: none;
+    background-size: 22px 22px;
+}
+.form-switch .form-check-input:checked {
+    background-color: #1AC431;
+    border-color: #1AC431;
+    background-position: right 2px!important;
+}
+.login-form .btn-login{
+    width: 100%;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-style: normal;
+    font-family: 'Plus Jakarta Sans';
+    background-color: #1B275F;
+}
+
+.login-form .btn-login:hover,
+.login-form .btn-login:active,
+.login-form .btn-login:focus,
+.login-form .btn-login.active {
+    background: #1B275F;
+    color: #ffffff;
+    border-color: #1B275F;
+}
+
+
+.navigation {
+    padding: 27px 20px;
+    font-family: 'Plus Jakarta Sans';
+}
+.navigation h1{
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 600;
+    font-size: 24px;
+    color: #1B275F;
+    margin-left: 20px;
+    margin-bottom: 0px;
+}
+.btn-login {
+    width: 100%;
+    color: #F9F9F9;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-style: normal;
+    background-color: #1B275F;
+    text-decoration: none;
+}
+.btn-login:hover,
+.btn-login:active,
+.btn-login:focus,
+.btn-login.active {
+    background: #1B275F;
+    color: #ffffff;
+    border-color: #1B275F;
+}
+.barcodeapp_select{
+    padding: 0 50px;
+    text-align: left;
+}
+.barcodeapp_select h1{
+    font-weight: 700;
+    font-size: 64px;
+    color: #1B275F;
+}
+.barcodeapp_select h2{
+    font-weight: 600;
+    font-size: 40px;
+    color: #1B275F;
+}
+
+
+.barcode_infobox{
+    padding: 40px;
+    background: #EDEDF0;
+    border-radius: 16px;
+    margin-top: 25px;
+    margin-bottom: 100px;    
+}
+.info-box-2 {
+    height: 120px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgb(0 0 0 / 16%);
+}
+.bg-indigo {
+    color: #fff;
+    background-color: #283A8F !important;
+}
+.info-box-2 .content_text {
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 24px;
+    margin: 0 30px;
+    color: rgb(255, 255, 255);
+}
+
+
+.leftside_v_menu{
+    width: 85px;
+    height: 100vh;
+    background: #FFFFFF;
+    padding: 25px 20px;
+    overflow: hidden;
+    box-shadow: 0px 1px 1px rgb(0 0 0 / 16%);
+}
+.leftside_v_menu > div {height: 100vh;}
+.rightside_div{
+    width: calc(100% - 85px);
+    height: 100vh;
+    overflow: auto;
+}
+
+.logo_sidemenu{
+    margin-bottom: 30px;
+    display: inline-block;
+}
+.leftside_v_menu .nav-link{
+    padding: 0px;
+    margin: 15px 0px;
+}
+.inside_vertical_menu{
+    height: 87%;
+}
+.rightside_div .src {display: none;}
+.rightside_div .navigation h1{ margin-left: 0px;}
+.btn_back {
+    padding: 12px 30px;
+    background: #D9DFFC;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #43539D;
+    margin-bottom: 16px;
+    text-decoration: none;
+    display: inline-block;
+}
+.barcode_card{
+    padding: 30px;
+    height: 220px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    position: relative;
+    background: #FFFFFF;
+    border: 1px solid transparent;
+    box-shadow: 0px 2px 6px rgb(0 0 0 / 16%);
+}
+.barcode_card:hover {
+    border: 1px solid #D9DFFC;
+}
+.barcode_card .icon_card {
+    width: 96px;
+    height: 96px;
+    background: #D9DFFC;
+    border-radius: 100px;
+    margin-bottom: 30px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+.card_title h3{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    color: #283A8F;
+    margin-bottom: 0px;
+}
+.icon_absolute {
+    position: absolute;
+    width: 256px;
+    height: 256px;
+    right: -35px;
+    opacity: 0.1;
+    top: -18px;
+}
+
+.purchase_order{
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background: #FFFFFF;
+    border: 1px solid #D9DFFC;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.16);
+}
+.purchase_order h2{
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 40px;
+    color: #283A8F;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.print_btn{
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    color: #283A8F;
+    background: #ECEFFD;
+    border: 1px solid #283A8F;
+    text-decoration: none;
+}
+.scan_btn{
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    color: #283A8F;
+    background: #ffffff;
+    border: 1px solid #283A8F;
+    text-decoration: none;
+}
+.purchase_form {text-align: left;}
+.purchase_form label{
+    color: #000000;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Plus Jakarta Sans';
+}
+.purchase_form .form-control{
+    border: 1px solid #B7B8C3;
+    border-radius: 4px;
+    background: #F9F9F9;
+    padding: 10px;
+    margin-bottom: 25px;
+}
+
+.purchase_table {
+    border: 1px solid #DBDCE1;
+    border-radius: 5px;
+    margin-bottom: 50px !important;
+}
+.purchase_table th, .purchase_table td{
+    font-size: 16px;
+    font-weight: 500;
+    color: #1E1F2A;
+    padding: 15px !important;
+}
+.purchase_table thead th{    
+    background: #ECEFFD;
+    border-radius: 5px 5px 0px 0px;
+    font-family: 'Plus Jakarta Sans';
+}
+
+.modal-header{
+    border: none !important;
+    padding: 30px !important;
+}
+.modal-header .modal-title {
+    font-family: 'Plus Jakarta Sans';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 32px !important;
+    color: #1E1F2A;
+}
+.modal-body {padding: 0 30px !important;}
+.purchase_form .input-group .form-control{
+    border: none;
+}
+.purchase_form .input-group .input-group-text{
+    border-radius: 8px;
+    border: none;
+    background: #FAFAFA;
+    padding: 6px 17px;
+}
+.purchase_form .input-group {
+    border: 1px solid #B7B8C3;
+    border-radius: 4px;
+    background: #F9F9F9;
+}
+
+.modal-footer {
+    margin-top: 30px;
+    border: none !important;
+    padding: 30px !important;
+}
+.modal-footer .btn-primary {
+    padding: 10px 50px;
+    background: #1B275F;
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 500;
+    font-size: 16px;
+    color: #FFFFFF;
+    border: 1px solid #1B275F;
+}
+.modal-footer .btn-primary:hover{
+    background: #1B275F;
+    color: #FFFFFF;
+    border: 1px solid #1B275F;
+}
+.modal-footer .btn-secondary {
+    padding: 10px 50px;
+    background: #DCE3E3;
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 500;
+    font-size: 16px;
+    color: #4A4E69;
+    border: none;
+}
+.modal-footer .btn-secondary:hover{
+    background: #DCE3E3;
+    color: #4A4E69;
+    border: none;
+}
+
+.barcodeapp_select .scanscreen{
+    height: 85vh;
+}
+
+.purchase_order .btn-login {
+    display: inline-block;
+    width: auto;
+}
