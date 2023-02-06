@@ -41,9 +41,10 @@
                                 <span class="input-group-text">
                                     <img src="/assets/images/lock.svg" alt="" title="" />
                                 </span>
-                                <input type="password" class="form-control" placeholder="8+ letters and numbers" id="password" v-model="password" />
-                                <span class="input-group-text">
-                                    <img src="/assets/images/eye.svg" alt="" title="" />
+                                <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="8+ letters and numbers" id="password" v-model="password" />
+                                <span @click="handleClick" class="input-group-text" >
+                                    <img v-if="!showPassword" src="/assets/images/eye.svg" alt="" title="" />
+                                    <img v-if="showPassword" src="/assets/images/hide.png" width="22" height="22" alt="" title="" />
                                 </span>
                             </div>
                             <small v-if="errors.password" class="text-danger">{{ errors.password }}</small>
@@ -69,6 +70,7 @@ export default {
     name: "LoginView",
     data() {
         return {
+            showPassword: false,
             email: "",
             password: "",
             errors: {
@@ -97,6 +99,9 @@ export default {
                 valid = false;
             }
             return valid;
+        },
+        handleClick() {
+            this.showPassword = !this.showPassword
         },
         async submitForm() {
             this.$store.commit('setIsLoading', true)
