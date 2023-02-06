@@ -7,7 +7,7 @@
             <Navigation />
             <div class="main_content">
                 <div class="container text-start">
-                    <a href="/home" class="btn_back">Back</a>
+                    <a href="/scan-barcode" class="btn_back">Back</a>
                     <div class="purchase_order">
                         <h2>Purchase Order
                             <div class="d-flex">
