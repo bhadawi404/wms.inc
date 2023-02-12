@@ -6,6 +6,8 @@ import StockTakeView from '../views/StockTakeView.vue'
 import ScanBarcodeView from '../views/ScanBarcodeView.vue'
 import PurchaseOrder from '../views/PurchaseOrder.vue'
 import ScanScreen from '../views/ScanScreen.vue'
+import ConsumeView from '../views/ConsumeView.vue'
+import TransferView from '../views/TransferView.vue'
 import store from '../store'
 
 
@@ -53,6 +55,22 @@ const routes = [
     path: '/purchase-order',
     name: 'purchase-order',
     component: PurchaseOrder,
+    meta:{
+      requireLogin:true
+    }
+  },
+  {
+    path: '/consume-issued',
+    name: 'consume-issued',
+    component: ConsumeView,
+    meta:{
+      requireLogin:true
+    }
+  },
+  {
+    path: '/internal-transfer',
+    name: 'internal-transfer',
+    component: TransferView,
     meta:{
       requireLogin:true
     }
