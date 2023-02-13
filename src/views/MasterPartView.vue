@@ -27,6 +27,7 @@
                     <th>#</th>
                     <th>No</th>
                     <th class="text-center">Product Name</th>
+                    <th class="text-center">Product Barcode</th>
                     <th class="text-center">Product Category</th>
                     <th class="text-center">Product Number</th>
                     <th class="text-center">Product UoM</th>
@@ -39,6 +40,7 @@
                     </td>
                     <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                     <td>{{ item.productName }}</td>
+                    <td>{{ item.productBarcode }}</td>
                     <td>{{ item.productCategory }}</td>
                     <td>{{ item.productNumber }}</td>
                     <td>{{ item.productUom }}</td>
