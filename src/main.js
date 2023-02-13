@@ -7,7 +7,7 @@ import store from './store';
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import "bootstrap/dist/js/bootstrap.js"
 
-axios.defaults.baseURL = 'http://149.129.233.161/api'
+axios.defaults.baseURL = 'http://203.175.10.144/api'
 // axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
 
 
