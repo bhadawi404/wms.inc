@@ -2,8 +2,8 @@
     <div class="container">
         <section id="hero" class="barcodeapp_select">
             <div class="row align-items-center justify-content-between">
-                <div class="col-6 me-auto">
-                    <h1>Hi, Peeps!</h1>
+                <div class="col-12 me-auto">
+                    <h1>Hi, {{ username }} !</h1>
                     <h2>Today is a beautiful day</h2>
                 </div>
                 <div class="col-6 ms-auto text-end">
@@ -62,6 +62,16 @@
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'section-hero',
+    data() {
+        return {
+            username:''
+        }
+    },
+    mounted() {
+        if(localStorage.getItem('username')){
+            this.username = localStorage.getItem('username');
+        }
+    },
 
 }
 </script>

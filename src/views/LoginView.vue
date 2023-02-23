@@ -116,11 +116,15 @@ export default {
                 axios
                 .post('/user/login/', formData)
                 .then(response => {
+                    console.log(response);
+                    // return false
                     const token = response.data.token
+                    const username = response.data.username
 
                     this.$store.commit('setToken', token)
                     axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
                     localStorage.setItem('token', token)
+                    localStorage.setItem('username', username)
                     this.$router.push('/home')
 
                 })
