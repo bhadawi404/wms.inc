@@ -6,9 +6,7 @@ import StockTakeView from '../views/StockTakeView.vue'
 import ScanBarcodeView from '../views/ScanBarcodeView.vue'
 import PurchaseOrder from '../views/PurchaseOrder.vue'
 import ScanScreen from '../views/ScanScreen.vue'
-import ConsumeView from '../views/ConsumeView.vue'
-import TransferView from '../views/TransferView.vue'
-import store from '../store'
+
 
 
 
@@ -90,11 +88,11 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requireLogin) && !store.state.isAuthenticated){
-    next('/')
-  }else{
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if(to.matched.some(record => record.meta.requireLogin) && !store.state.isAuthenticated){
+//     next('/')
+//   }else{
+//     next()
+//   }
+// })
 export default router

@@ -14,12 +14,13 @@
                                 <a href="printlabel" class="print_btn" data-bs-toggle="modal" data-bs-target="#printlabel">
                                     Print Label
                                 </a>
-                                <a href="scanitem" class="scan_btn ms-4" data-bs-toggle="modal" data-bs-target="#scanitem">
+                                <a href="scanitem" class="scan_btn ms-4" @click="openCamera = !openCamera" data-bs-toggle="modal" data-bs-target="#scanitem">
                                     Scan Item
                                 </a>
                             </div>
                         </h2>
-                        <div class="row purchase_form">
+                        
+                        <div class="row purchase_form mt-5">
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase ID</label>
                                 <input type="text" class="form-control" id="" placeholder="">
@@ -58,21 +59,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td  class="text-center">Bakso</td>
-                                        <td  class="text-center">10</td>
+                                    <tr v-for="(data,index) in items" :key="index">
+                                        <td  class="text-center">{{ data.purchaseOrderName }}</td>
+                                        <td  class="text-center">{{ data.purchaseOrderTotalQtyRequest }}</td>
                                         <td  class="text-center">8</td>
                                         <td  class="text-center">8</td>
                                         <td  class="text-center">-</td>
                                         <td  class="text-center">Bakso sapi</td>
-                                    </tr>
-                                    <tr>
-                                        <td  class="text-center">Sosis</td>
-                                        <td  class="text-center">20</td>
-                                        <td  class="text-center">20</td>
-                                        <td  class="text-center">20</td>
-                                        <td  class="text-center">-</td>
-                                        <td  class="text-center">Sosis Ayam</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -95,9 +88,9 @@
                         <h1 class="modal-title" id="printlabelLabel">Print Label</h1>
                     </div>
                     <div class="modal-body">
-                        <div class="row purchase_form">
-                            <div class="col-12">
-                                <div class="input-group mb-3">
+                        <div class="row purchase_form" v-for="(d,index) in items" :key="index">
+                            <div class="col-12" v-for="(data,index1) in d.purchaseOrderLine" :key="index1" >
+                                <!-- <div class="input-group mb-3">
                                     <button class="input-group-text" type="button">
                                         <img src="/assets/images/minus.svg" alt="" title="" />
                                     </button>
@@ -105,13 +98,16 @@
                                     <button class="input-group-text" type="button">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
                                     </button>
-                                </div>                                
+                                </div>-->
+
+                                <QRCodeVue3 :width="300" :height="300" v-if="data.productBarcode" :value="data.productBarcode" margin="0" :qrOptions='{"typeNumber":"0","mode":"Byte","errorCorrectionLevel":"H"}' :imageOptions='{"hideBackgroundDots":true,"imageSize":0.4,"margin":0}' :dotsOptions='{"type":"dots","color":"#1a191a"}' :backgroundOptions='{"color":"#ffffff"}'  :dotsOptionsHelper='{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#6a1a4c","color2":"#6a1a4c","rotation":"0"}}' :cornersSquareOptions='{"type":"square","color":"#000000"}' :cornersSquareOptionsHelper='{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#000000","color2":"#000000","rotation":"0"}}' :cornersDotOptions='{"type":"dot","color":"#000000","gradient":null}' :cornersDotOptionsHelper='{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#000000","color2":"#000000","rotation":"0"}}' :backgroundOptionsHelper='{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#ffffff","color2":"#ffffff","rotation":"0"}}' myclass="my-qur"  ></QRCodeVue3>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary ms-4">Done</button>
+                        <button type="button" class="btn btn-info" @click="downloadQrCode">Download</button>
+                        <button type="button" class="btn btn-primary">Done</button>
                     </div>
                 </div>
             </div>
@@ -126,7 +122,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row purchase_form">
-                            <div class="col-12">
+                            <!-- <div class="col-12">
                                 <label class="form-label">Name Item</label>
                                 <input type="text" class="form-control" id="" placeholder="">
                             </div>
@@ -140,12 +136,21 @@
                                         <img src="/assets/images/plus.svg" alt="" title="" />
                                     </button>
                                 </div>                                
-                            </div>
+                            </div> -->
+                            <!-- <qrcode-stream @decode="onDecode" @init="onInit" v-if="openCamera" /> -->
+                            <StreamBarcodeReader
+                            @decode="(a, b, c) => onDecode(a, b, c)"
+                            @loaded="() => onLoaded()"
+                            v-if="openCamera"
+                            ></StreamBarcodeReader>
+                            <span v-if="errorInItem">Item Not Found!</span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary ms-4">Done</button>
+                        <button type="button" class="btn btn-secondary" id="closeModal" data-bs-dismiss="modal" @click="openCamera = !openCamera" v-if="!retryButton">Cancel</button>
+                        <router-link to="/scan-barcode" class="btn btn-secondary text-decoration-none" v-if="retryButton"> Cancel </router-link>
+                        <button type="button" class="btn btn-primary ms-4" v-if="!retryButton">Done</button>
+                        <button type="button" class="btn btn-primary ms-4" v-if="retryButton" @click="clickRetryButton" >Retry</button>
                     </div>
                 </div>
             </div>
@@ -156,13 +161,125 @@
 <script>
 import Navigation from "../components/Navigation.vue";
 import LeftSideMenu from "../components/LeftSideMenu.vue";
+// import { QrcodeStream } from 'vue3-qrcode-reader'
+import { StreamBarcodeReader } from "vue-barcode-reader";
+import QRCodeVue3 from "qrcode-vue3";
+import axios from 'axios'
+
 
 export default {
     name: "PurchaseOrder",
     components: {
-      Navigation,
-      LeftSideMenu,
+        Navigation,
+        LeftSideMenu,
+        StreamBarcodeReader,
+        QRCodeVue3,
+        // QrcodeStream,
+        // QrcodeDropZone,
+        // QrcodeCapture
     },
+    data() {
+        return {
+            result:'',
+            error: '',
+            openCamera:false,
+            barcode:'',
+            // barcode:'',
+            retryButton:false,
+            errorInItem:false,
+            items:[],
+        }
+    },
+    mounted() {
+        // this.scanOrder()
+    },
+    methods: {
+        // onDecode (result) {
+        //     this.result = result
+        //     console.log(result)
+        //     if(result){
+        //         // $('#scanitem').model('close');
+        //     }
+        // },
+        onDecode(a, b, c) {
+            console.log(a, b, c)
+        // this.barcode = a;
+        this.openCamera = false
+        this.retryButton = true
+        // var modalToggle =  document.getElementById('closeModal') // relatedTarget
+        //         modalToggle.click()
+        if(a){
+            this.scanOrder()
+        }
+        // if (this.id) clearTimeout(this.id);
+        // this.id = setTimeout(() => {
+        //     if (this.text === a) {
+        //     this.text = "";
+        //     }
+        // }, 5000);
+        },
+        onLoaded() {
+            console.log("load");
+        },
+        clickRetryButton(){
+            this.openCamera = true
+            this.retryButton = false
+        },
+        downloadQrCode (){
+            const image = document.querySelector(".my-qur img");
+             const canvas = document.createElement("canvas"); canvas.width = image.width; canvas.height = image.height; const context = canvas.getContext("2d"); context.drawImage(image, 0, 0, image.width, image.height); 
+            // Get the base64 encoded data of the image
+             const url = canvas.toDataURL("image/png"); 
+             var link = document.createElement("a");
+              document.body.appendChild(link);
+             // for Firefox 
+             link.setAttribute("href", url); 
+             const fileName = (new Date()).toLocaleString() + '-qr-code.png' 
+             link.setAttribute("download", fileName);
+              link.click();
+        },
+        scanOrder(){
+            let data = {
+                'barcode' : this.barcode
+            }
+            let token = localStorage.getItem('token')
+            axios.defaults.headers.common = {'Authorization': `Bearer `+token}
+            axios.post('/v1/scan/purchase-order/',data).then(response => {
+                    if(response.statusCode == '404'){
+                        this.errorInItem = true
+                        this.openCamera = false
+                    }else{
+                        this.items = response.data.data;
+                    }
+
+
+                }).catch(error => {
+                    console.log(error)
+                })
+        },
+        async onInit (promise) {
+            try {
+                await promise
+            } catch (error) {
+                if (error.name === 'NotAllowedError') {
+                this.error = "ERROR: you need to grant camera access permission"
+                } else if (error.name === 'NotFoundError') {
+                this.error = "ERROR: no camera on this device"
+                } else if (error.name === 'NotSupportedError') {
+                this.error = "ERROR: secure context required (HTTPS, localhost)"
+                } else if (error.name === 'NotReadableError') {
+                this.error = "ERROR: is the camera already in use?"
+                } else if (error.name === 'OverconstrainedError') {
+                this.error = "ERROR: installed cameras are not suitable"
+                } else if (error.name === 'StreamApiNotSupportedError') {
+                this.error = "ERROR: Stream API is not supported in this browser"
+                } else if (error.name === 'InsecureContextError') {
+                this.error = 'ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.';
+                } else {
+                this.error = `ERROR: Camera error (${error.name})`;
+                }
+            }
+        }
+    }
 };
 </script>
-  
