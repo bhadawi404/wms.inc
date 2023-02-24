@@ -6,8 +6,8 @@ import StockTakeView from '../views/StockTakeView.vue'
 import ScanBarcodeView from '../views/ScanBarcodeView.vue'
 import PurchaseOrder from '../views/PurchaseOrder.vue'
 import ScanScreen from '../views/ScanScreen.vue'
-
-
+import ConsumeView from '../views/ConsumeView.vue'
+import TransferView from '../views/TransferView.vue'
 
 
 const routes = [
