@@ -28,7 +28,7 @@
             </ul>
             <ul class="nav flex-column">
                 <li class="nav-item mt-auto">
-                    <a class="nav-link" href="javascript:void(0)">
+                    <a class="nav-link" @click="logout()">
                         <img src="/assets/images/logout.svg" alt="" title="" />
                     </a>
                 </li>
@@ -43,6 +43,12 @@ export default {
     name: "LeftSideMenu",
     components: {
     },
+    methods: {
+        logout(){
+            localStorage.removeItem('token')
+            this.$router.push('/')
+        }
+    }
 };
 </script>
   

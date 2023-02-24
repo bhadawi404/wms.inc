@@ -11,7 +11,7 @@
                     <div class="row">
                         <div class="col-md-6 col-lg-6 col-sm-12 col-12">
                             <div class="barcode_card">
-                                <a href="javascript:void(0)" class="text-decoration-none">
+                                <a href="/internal-transfer" class="text-decoration-none">
                                     <div class="icon_card">
                                         <img src="/assets/images/bitcoinconvert.svg" alt="" title="" />
                                     </div>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-md-6 col-lg-6 col-sm-12 col-12">
                             <div class="barcode_card">
-                                <a href="javascript:void(0)" class="text-decoration-none">
+                                <a href="/consume-issued" class="text-decoration-none">
                                     <div class="icon_card">
                                         <img src="/assets/images/shoppingbag.svg" alt="" title="" />
                                     </div>
