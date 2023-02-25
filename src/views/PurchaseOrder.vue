@@ -279,18 +279,28 @@ export default {
         })
         },
         searchAndUpdate() {
-            alert("masuk 1")
-            var item = null
-            item = this.items.find(item => item.productName==this.poVendor );
-            alert("masuk 2")
-            if (item) {
-                alert("masuk 3")
-                item.productQtyReceived=item.productQtyReceived+1
-                alert(item.productQtyReceived)
-                item.productName=item.productQtyReceived
-                item.status='1'
-            }
-            alert("masuk 4")
+            let new_items = []
+            this.items.forEach(x => {
+                        if(x.productName==this.poVendor){
+                            new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived+1, status: '1' }) 
+                        }else{
+                            new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
+                        }
+                    });
+            this.items = new_items
+            
+            // alert("masuk 1")
+            // var item = null
+            // item = this.items.find(item => item.productName==this.poVendor );
+            // alert("masuk 2")
+            // if (item) {
+            //     alert("masuk 3")
+            //     item.productQtyReceived=item.productQtyReceived+1
+            //     alert(item.productQtyReceived)
+            //     item.productName=item.productQtyReceived
+            //     item.status='1'
+            // }
+            // alert("masuk 4")
             
         },
         GetBarcode() {
