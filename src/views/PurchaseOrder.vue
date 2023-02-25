@@ -208,7 +208,7 @@ export default {
         // },
         filteredItems() {
         return this.items.filter(item => {
-            return item.status.toLowerCase().includes('0')
+            return item.status.toLowerCase().includes('1')
         })
         },
         GetBarcode() {
