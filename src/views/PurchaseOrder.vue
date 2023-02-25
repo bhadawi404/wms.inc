@@ -53,16 +53,16 @@
                                         <th class="text-center">Product Name</th>
                                         <th class="text-center">Qty Request</th>
                                         <th class="text-center">Qty Received</th>
-                                        <!-- <th class="text-center">UoM</th> -->
+                                        <th class="text-center">UoM</th>
                                         <!-- <th class="text-center">Description</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(data,index) in items" :key="index">
+                                    <tr v-for="data in filteredItems()" :key="data.id">
                                         <td  class="text-center">{{ data.productName}}</td>
                                         <td  class="text-center">{{ data.productQtyRequestPO }}</td>
                                         <td  class="text-center">{{ data.productQtyReceived }}</td>
-                                        <!-- <td  class="text-center">{{ data.productQtyReceived }}</td> -->
+                                        <td  class="text-center">{{ data.status }}</td>
                                         <!-- <td  class="text-center">Bakso sapi</td> -->
                                     </tr>
                                 </tbody>
@@ -206,6 +206,11 @@ export default {
         //         // $('#scanitem').model('close');
         //     }
         // },
+        filteredItems() {
+        return this.items.filter(item => {
+            return item.status.toLowerCase().includes('0')
+        })
+        },
         GetBarcode() {
             let data = {
                 'barcode' : this.poName
@@ -213,7 +218,7 @@ export default {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = {'Authorization': `Bearer `+token}
             axios.post('/v1/scan/purchase-order/',data).then(response => {
-                    if(response.data.statusDesc == 'DATA NOT FOUND'){
+                    if(response.data.statusDesc == '404'){
                         this.items =""
                         this.poName = ""
                         this.poVendor = ""
@@ -221,8 +226,21 @@ export default {
                         this.poReceive = ""
                         this.items = "";
                         alert('Data Not Found')
+                    }else if(response.data.statusDesc == '401'){
+                        this.items =""
+                        this.poName = ""
+                        this.poVendor = ""
+                        this.poDate = ""
+                        this.poReceive = ""
+                        this.items = "";
+                        alert('Token has expired!!! Please Login Again')
+                        this.$router.push('/')
                     }else{
-                        this.items = response.data.data[0].purchaseOrderLine;
+                        // for (let i = 0: i < )
+                        response.data.data[0].purchaseOrderLine.forEach(x => {
+                            this.items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0'  })
+                        });
+                        // this.items = response.data.data[0].purchaseOrderLine;
                         this.poName = response.data.data[0].purchaseOrderName
                         this.poVendor = response.data.data[0].purchaseOrderVendor
                         this.poDate = response.data.data[0].purchaseOrderDateOrder
