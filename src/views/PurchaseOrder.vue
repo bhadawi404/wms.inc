@@ -15,7 +15,7 @@
                                     Print Label
                                 </a>
                                 <a href="scanitem" class="scan_btn ms-4" @click="openCamera = !openCamera" data-bs-toggle="modal" data-bs-target="#scanitem">
-                                    Scan Item
+                                    Scan Barcode PO
                                 </a>
                             </div>
                         </h2>
@@ -23,27 +23,27 @@
                         <div class="row purchase_form mt-5">
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase ID</label>
-                                <input type="text" class="form-control" id="" placeholder="">
+                                <input type="text" class="form-control" v-model="poName" placeholder="">
                             </div>
-                            <div class="col-md-6 col-sm-12 col-12">
+                            <!-- <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase Agreement</label>
                                 <input type="text" class="form-control" id="" placeholder="">
-                            </div>
+                            </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor</label>
-                                <input type="text" class="form-control" id="" placeholder="">
+                                <input type="text" class="form-control" v-model="poVendor" id="" placeholder="">
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase  Date</label>
-                                <input type="text" class="form-control" id="" placeholder="">
+                                <input type="text" class="form-control" v-model="poDate" id="" placeholder="">
                             </div>
-                            <div class="col-md-6 col-sm-12 col-12">
+                            <!-- <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor Refference</label>
                                 <input type="text" class="form-control" id="" placeholder="">
-                            </div>
+                            </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
-                                <label class="form-label">Delivery Date</label>
-                                <input type="text" class="form-control" id="" placeholder="">
+                                <label class="form-label">Receipt Date</label>
+                                <input type="text" class="form-control"  v-model="poReceive" id="" placeholder="">
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -53,19 +53,17 @@
                                         <th class="text-center">Product Name</th>
                                         <th class="text-center">Qty Request</th>
                                         <th class="text-center">Qty Received</th>
-                                        <th class="text-center">Qty Billed</th>
-                                        <th class="text-center">UoM</th>
-                                        <th class="text-center">Description</th>
+                                        <!-- <th class="text-center">UoM</th> -->
+                                        <!-- <th class="text-center">Description</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in items" :key="index">
-                                        <td  class="text-center">{{ data.purchaseOrderName }}</td>
-                                        <td  class="text-center">{{ data.purchaseOrderTotalQtyRequest }}</td>
-                                        <td  class="text-center">8</td>
-                                        <td  class="text-center">8</td>
-                                        <td  class="text-center">-</td>
-                                        <td  class="text-center">Bakso sapi</td>
+                                        <td  class="text-center">{{ data.productName}}</td>
+                                        <td  class="text-center">{{ data.productQtyRequestPO }}</td>
+                                        <td  class="text-center">{{ data.productQtyReceived }}</td>
+                                        <!-- <td  class="text-center">{{ data.productQtyReceived }}</td> -->
+                                        <!-- <td  class="text-center">Bakso sapi</td> -->
                                     </tr>
                                 </tbody>
                             </table>
@@ -121,7 +119,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title" id="scanitemLabel">Scan Item</h1>
+                        <h1 class="modal-title" id="scanitemLabel">Scan Barcode PO</h1>
                     </div>
                     <div class="modal-body">
                         <div class="row purchase_form">
@@ -185,9 +183,13 @@ export default {
         return {
             result:'',
             error: '',
+            poName:'',
+            poDate:'',
+            poVendor:'',
+            poReceive:'',
             openCamera:false,
-            barcode:'JKT/IN/00075',
-            // barcode:'',
+            // barcode:'JKT/IN/00075',
+            barcode:'',
             retryButton:false,
             errorInItem:false,
             items:[],
@@ -206,7 +208,7 @@ export default {
         // },
         onDecode(a, b, c) {
             console.log(a, b, c)
-        // this.barcode = a;
+        this.barcode = a,b,c;
         this.openCamera = false
         this.retryButton = true
         // var modalToggle =  document.getElementById('closeModal') // relatedTarget
@@ -248,11 +250,16 @@ export default {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = {'Authorization': `Bearer `+token}
             axios.post('/v1/scan/purchase-order/',data).then(response => {
+                console.log(response.data.data[0].purchaseOrderLine)
                     if(response.data.statusCode == '404'){
                         this.errorInItem = true
                         this.openCamera = false
                     }else{
-                        this.items = response.data.data;
+                        this.items = response.data.data[0].purchaseOrderLine;
+                        this.poName = response.data.data[0].purchaseOrderName
+                        this.poVendor = response.data.data[0].purchaseOrderVendor
+                        this.poDate = response.data.data[0].purchaseOrderDateOrder
+                        this.poReceive = response.data.data[0].purchaseOrderReceiptDate
                     }
                 }).catch(error => {
                     console.log(error)
@@ -262,6 +269,7 @@ export default {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = {'Authorization': `Bearer `+token}
             axios.put('/v1/validate-purchase/validate/',this.items).then(response => {
+                console.log(response)
                     if(response.data.statusCode == '200'){
                         alert(response.data.statusCodeDesc)
                     }else{
