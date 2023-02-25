@@ -23,7 +23,7 @@
                         <div class="row purchase_form mt-5">
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase ID</label>
-                                <input type="text" class="form-control" v-model="poName" placeholder="">
+                                <input type="text" class="form-control" v-model="poName" v-on:change="GetBarcode"  placeholder="">
                             </div>
                             <!-- <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase Agreement</label>
@@ -206,6 +206,39 @@ export default {
         //         // $('#scanitem').model('close');
         //     }
         // },
+        GetBarcode() {
+            let data = {
+                'barcode' : this.poName
+            }
+            let token = localStorage.getItem('token')
+            axios.defaults.headers.common = {'Authorization': `Bearer `+token}
+            axios.post('/v1/scan/purchase-order/',data).then(response => {
+                    if(response.data.statusDesc == 'DATA NOT FOUND'){
+                        this.items =""
+                        this.poName = ""
+                        this.poVendor = ""
+                        this.poDate = ""
+                        this.poReceive = ""
+                        this.items = "";
+                        alert('Data Not Found')
+                    }else{
+                        this.items = response.data.data[0].purchaseOrderLine;
+                        this.poName = response.data.data[0].purchaseOrderName
+                        this.poVendor = response.data.data[0].purchaseOrderVendor
+                        this.poDate = response.data.data[0].purchaseOrderDateOrder
+                        this.poReceive = response.data.data[0].purchaseOrderReceiptDate
+                    }
+                }).catch(error => {
+                    this.items =""
+                        this.poName = ""
+                        this.poVendor = ""
+                        this.poDate = ""
+                        this.poReceive = ""
+                        this.items = "";
+                        alert('Data Not Found 1')
+                    console.log(error)
+                })        
+        },
         onDecode(a, b, c) {
             console.log(a, b, c)
         this.barcode = a,b,c;
