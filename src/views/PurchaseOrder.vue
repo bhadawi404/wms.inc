@@ -41,7 +41,7 @@
                             </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor</label>
-                                <input type="text" class="form-control" v-model="poVendor" id="" placeholder="" disabled="1">
+                                <input type="text" class="form-control" v-model="poVendor" v-on:change="searchAndUpdate" id="" placeholder="">
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase Date</label>
@@ -63,8 +63,8 @@
                                         <th class="text-center">Product Name</th>
                                         <th class="text-center">Qty Request</th>
                                         <th class="text-center">Qty Received</th>
-                                        <th class="text-center">UoM</th>
                                         <!-- <th class="text-center">Description</th> -->
+                                        <th class="text-center">UoM</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -274,9 +274,24 @@ export default {
             this.$refs.product.focus();
         },
         filteredItems() {
-            return this.items.filter(item => {
-                return item.status.toLowerCase().includes('1')
-            })
+        return this.items.filter(item => {
+            return item.status.toLowerCase().includes('1')
+        })
+        },
+        searchAndUpdate() {
+            alert("masuk 1")
+            var item = null
+            item = this.items.find(item => item.productName==this.poVendor );
+            alert("masuk 2")
+            if (item) {
+                alert("masuk 3")
+                item.productQtyReceived=item.productQtyReceived+1
+                alert(item.productQtyReceived)
+                item.productName=item.productQtyReceived
+                item.status='1'
+            }
+            alert("masuk 4")
+            
         },
         GetBarcode() {
             let data = {
