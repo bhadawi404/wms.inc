@@ -285,15 +285,7 @@ export default {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             axios.post('/v1/scan/purchase-order/', data).then(response => {
-                if (response.data.statusDesc == '404') {
-                    this.items = ""
-                    this.poName = ""
-                    this.poVendor = ""
-                    this.poDate = ""
-                    this.poReceive = ""
-                    this.items = "";
-                    alert('Data Not Found')
-                } else if (response.data.statusDesc == '401') {
+                if (response.data.statusDesc == '401') {
                     this.items = ""
                     this.poName = ""
                     this.poVendor = ""
@@ -314,14 +306,26 @@ export default {
                     this.poReceive = response.data.data[0].purchaseOrderReceiptDate
                 }
             }).catch(error => {
-                this.items = ""
-                this.poName = ""
-                this.poVendor = ""
-                this.poDate = ""
-                this.poReceive = ""
-                this.items = "";
-                alert('Data Not Found 1')
-                console.log(error)
+                // alert(error.message)
+                if (error.message == 'Request failed with status code 401') {
+                    this.items = ""
+                    this.poName = ""
+                    this.poVendor = ""
+                    this.poDate = ""
+                    this.poReceive = ""
+                    this.items = "";
+                    alert('Token Expired')
+                    localStorage.removeItem('token')
+                    this.$router.push('/')
+                }else if(error.message == 'Request failed with status code 404'){
+                    this.items = ""
+                    this.poName = ""
+                    this.poVendor = ""
+                    this.poDate = ""
+                    this.poReceive = ""
+                    this.items = "";
+                    alert('Data Not Found')
+                }
             })
         },
         onDecode(a, b, c) {
