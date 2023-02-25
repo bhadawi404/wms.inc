@@ -11,23 +11,23 @@
                     <div class="purchase_order">
                         <h2>Purchase Order
                             <div class="d-flex">
-                                <a href="scanitem" class="print_btn" data-bs-toggle="modal" data-bs-target="#scanitem">
-                                    Scan Item
-                                </a>
-                            </div>
-                            <div class="d-flex">
                                 <a href="printlabel" class="print_btn" data-bs-toggle="modal" data-bs-target="#printlabel">
                                     Print Label
                                 </a>
-
-                                <a href="scanPO" class="scan_btn ms-4" @click="openCamera = !openCamera"
-                                    data-bs-toggle="modal" data-bs-target="#scanPO">
-                                    Scan Barcode PO
+                                <a href="scanitem" class="scan_btn ms-4" data-bs-toggle="modal" data-bs-target="#scanitem">
+                                    Scan Item
                                 </a>
-
                             </div>
 
                         </h2>
+                        <div class="d-flex">
+                            
+                            <button v-if="isDesktop" class="print_btn" @click="showModal">Scan Purchase Order</button>
+                            <a href="scanPO" v-else class="scan_btn ms-4" @click="openCamera = !openCamera"
+                                    data-bs-toggle="modal" data-bs-target="#scanPO">
+                                    Scan Barcode PO
+                                </a>
+                        </div>
 
                         <div class="row purchase_form mt-5">
                             <div class="col-md-6 col-sm-12 col-12">
@@ -41,7 +41,8 @@
                             </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor</label>
-                                <input type="text" class="form-control" v-model="poVendor" v-on:change="searchAndUpdate" id="" placeholder="">
+                                <input type="text" class="form-control" v-model="poVendor" v-on:change="searchAndUpdate"
+                                    id="" placeholder="">
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase Date</label>
@@ -53,7 +54,8 @@
                             </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Receipt Date</label>
-                                <input type="text" class="form-control" v-model="poReceive" id="" placeholder="" disabled="1">
+                                <input type="text" class="form-control" v-model="poReceive" id="" placeholder=""
+                                    disabled="1">
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -172,7 +174,33 @@
                 </div>
             </div>
         </div>
+        <!-- Modal Scan PO-->
 
+        <div class="modal fide" :class="{ 'is-active': modalIsActive }" role="dialog" tabindex="-1"
+            aria-labelledby="scanitemLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-background" @click="hideModal"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="scanitemLabel">Scan PO</h1>
+                    </div>
+                    <div class="modal-body-wms">
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="form-label">Barcode PO</label>
+                                <input type="text" class="form-control col-12" v-model="ponum" v-on:change="GetBarcodePopup"
+                                    ref="input" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary col-12" @click="hideModal">Cancel</button>
+                        <!-- <button type="button" class="btn btn-primary" @click="resetText">Reset</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end-->
         <!-- scan item Modal -->
         <div class="modal fade" id="scanPO" tabindex="-1" aria-labelledby="scanPOLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -242,23 +270,30 @@ export default {
         return {
             result: '',
             error: '',
+            ponum: '',
             poName: '',
             poDate: '',
             poVendor: '',
             poReceive: '',
             openCamera: false,
-            // barcode:'JKT/IN/00075',
             barcode: '',
             retryButton: false,
             errorInItem: false,
+            modalIsActive: false,
+            isDesktop: false,
             items: [],
+
         }
     },
     mounted() {
         // this.scanOrder()
         this.focusInput()
         this.focusInputPopUp()
+        this.checkIsDesktop();
+        window.addEventListener('resize', this.checkIsDesktop);
+        
     },
+    
     methods: {
         // onDecode (result) {
         //     this.result = result
@@ -267,41 +302,45 @@ export default {
         //         // $('#scanPO').model('close');
         //     }
         // },
+        checkIsDesktop() {
+            this.isDesktop = window.innerWidth >= 768;
+        },
+        showModal() {
+            this.modalIsActive = true;
+        },
+        hideModal() {
+            this.modalIsActive = false;
+        },
+        resetText(){
+            this.ponum = ''
+        },
         focusInput() {
             this.$refs.po.focus();
         },
         focusInputPopUp() {
-            this.$refs.product.focus();
+            this.$refs.input.focus();
         },
         filteredItems() {
-        return this.items.filter(item => {
-            return item.status.toLowerCase().includes('1')
-        })
+            // return this.items.filter(item => {
+            //     return item.status.toLowerCase().includes('1')
+            // })
+            if (Array.isArray(this.items)) {
+                this.items.filter(item => item.status === '1');
+            }
         },
         searchAndUpdate() {
             let new_items = []
             this.items.forEach(x => {
-                        if(x.productName==this.poVendor){
-                            new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived+1, status: '1' }) 
-                        }else{
-                            new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
-                        }
-                    });
+                if (x.productName == this.poVendor) {
+                    new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived + 1, status: '1' })
+                } else {
+                    new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
+                }
+            });
             this.items = new_items
+
             
-            // alert("masuk 1")
-            // var item = null
-            // item = this.items.find(item => item.productName==this.poVendor );
-            // alert("masuk 2")
-            // if (item) {
-            //     alert("masuk 3")
-            //     item.productQtyReceived=item.productQtyReceived+1
-            //     alert(item.productQtyReceived)
-            //     item.productName=item.productQtyReceived
-            //     item.status='1'
-            // }
-            // alert("masuk 4")
-            
+
         },
         GetBarcode() {
             let data = {
@@ -316,14 +355,17 @@ export default {
                     this.poVendor = ""
                     this.poDate = ""
                     this.poReceive = ""
-                    this.items = "";
+                    this.items = [];
                     alert('Token has expired!!! Please Login Again')
                     this.$router.push('/')
                 } else {
+                    // this.showModal = false
+
                     // for (let i = 0: i < )
                     response.data.data[0].purchaseOrderLine.forEach(x => {
                         this.items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
                     });
+
                     // this.items = response.data.data[0].purchaseOrderLine;
                     this.poName = response.data.data[0].purchaseOrderName
                     this.poVendor = response.data.data[0].purchaseOrderVendor
@@ -338,17 +380,71 @@ export default {
                     this.poVendor = ""
                     this.poDate = ""
                     this.poReceive = ""
-                    this.items = "";
+                    this.items = [];
                     alert('Token Expired')
                     localStorage.removeItem('token')
                     this.$router.push('/')
-                }else if(error.message == 'Request failed with status code 404'){
+                } else if (error.message == 'Request failed with status code 404') {
                     this.items = ""
                     this.poName = ""
                     this.poVendor = ""
                     this.poDate = ""
                     this.poReceive = ""
-                    this.items = "";
+                    this.items = [];
+                    alert('Data Not Found')
+                }
+            })
+        },
+        GetBarcodePopup() {
+            let data = {
+                'barcode': this.ponum
+            }
+            let token = localStorage.getItem('token')
+            axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
+            axios.post('/v1/scan/purchase-order/', data).then(response => {
+                if (response.data.statusDesc == '401') {
+                    this.items = ""
+                    this.poName = ""
+                    this.poVendor = ""
+                    this.poDate = ""
+                    this.poReceive = ""
+                    this.items = [];
+                    alert('Token has expired!!! Please Login Again')
+                    this.$router.push('/')
+                }
+                else {
+                    this.hideModal();
+                    // this.showModal = false
+                    // for (let i = 0: i < )
+                    response.data.data[0].purchaseOrderLine.forEach(x => {
+                        this.items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
+                    });
+
+                    // this.items = response.data.data[0].purchaseOrderLine;
+                    this.poName = response.data.data[0].purchaseOrderName
+                    this.poVendor = response.data.data[0].purchaseOrderVendor
+                    this.poDate = response.data.data[0].purchaseOrderDateOrder
+                    this.poReceive = response.data.data[0].purchaseOrderReceiptDate
+                }
+            }).catch(error => {
+                // alert(error.message)
+                if (error.message == 'Request failed with status code 401') {
+                    this.items = ""
+                    this.poName = ""
+                    this.poVendor = ""
+                    this.poDate = ""
+                    this.poReceive = ""
+                    this.items = [];
+                    alert('Token Expired')
+                    localStorage.removeItem('token')
+                    this.$router.push('/')
+                } else if (error.message == 'Request failed with status code 404') {
+                    this.items = ""
+                    this.poName = ""
+                    this.poVendor = ""
+                    this.poDate = ""
+                    this.poReceive = ""
+                    this.items = [];
                     alert('Data Not Found')
                 }
             })
@@ -452,3 +548,51 @@ export default {
     }
 };
 </script>
+
+<style>
+
+
+.modal.is-active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    --bs-modal-zindex: 1055;
+    --bs-modal-width: 500px;
+    --bs-modal-padding: 1rem;
+    --bs-modal-margin: 0.5rem;
+    --bs-modal-color: ;
+    --bs-modal-bg: #fff;
+    --bs-modal-border-color: var(--bs-border-color-translucent);
+    --bs-modal-border-width: 1px;
+    --bs-modal-border-radius: 0.5rem;
+    --bs-modal-box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --bs-modal-inner-border-radius: calc(0.5rem - 1px);
+    --bs-modal-header-padding-x: 1rem;
+    --bs-modal-header-padding-y: 1rem;
+    --bs-modal-header-padding: 1rem 1rem;
+    --bs-modal-header-border-color: var(--bs-border-color);
+    --bs-modal-header-border-width: 1px;
+    --bs-modal-title-line-height: 1.5;
+    --bs-modal-footer-gap: 0.5rem;
+    --bs-modal-footer-bg: ;
+    --bs-modal-footer-border-color: var(--bs-border-color);
+    --bs-modal-footer-border-width: 1px;
+    /* position: fixed; */
+    top: 0;
+    left: 0;
+    z-index: var(--bs-modal-zindex);
+    /* display: none; */
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+    /* background-color: var(--bs-backdrop-bg); */
+}
+
+
+.modal-body-wms {
+    padding: 0 96px !important;
+}
+</style>
