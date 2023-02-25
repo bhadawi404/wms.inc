@@ -71,9 +71,12 @@
                             </table>
                         </div>
                         <div class="text-end">
-                            <a href="#" class="btn-login">
-                                <img src="/assets/images/checkmark.png" alt="" title="" class="me-2" /> Validate
-                            </a>
+                            <button type="button" class="btn-login" :disabled="this.items.length == 0" @click="validateProduct">
+
+                                <img src="/assets/images/checkmark.png" alt="" title="" class="me-2"  /> Validate
+                            </button>
+                            <!-- <a href="#" >
+                            </a> -->
                         </div>
                     </div>
                 </div>
@@ -183,7 +186,7 @@ export default {
             result:'',
             error: '',
             openCamera:false,
-            barcode:'',
+            barcode:'JKT/IN/00075',
             // barcode:'',
             retryButton:false,
             errorInItem:false,
@@ -245,14 +248,25 @@ export default {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = {'Authorization': `Bearer `+token}
             axios.post('/v1/scan/purchase-order/',data).then(response => {
-                    if(response.statusCode == '404'){
+                    if(response.data.statusCode == '404'){
                         this.errorInItem = true
                         this.openCamera = false
                     }else{
                         this.items = response.data.data;
                     }
-
-
+                }).catch(error => {
+                    console.log(error)
+                })
+        },
+        validateProduct(){
+            let token = localStorage.getItem('token')
+            axios.defaults.headers.common = {'Authorization': `Bearer `+token}
+            axios.put('/v1/validate-purchase/validate/',this.items).then(response => {
+                    if(response.data.statusCode == '200'){
+                        alert(response.data.statusCodeDesc)
+                    }else{
+                        alert('Somethig Went Wrong!')
+                    }
                 }).catch(error => {
                     console.log(error)
                 })
