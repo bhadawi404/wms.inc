@@ -42,7 +42,7 @@
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor</label>
                                 <input type="text" class="form-control" v-model="poVendor" v-on:change="searchAndUpdate"
-                                    id="" placeholder="">
+                                    id="" placeholder="" disabled="1">
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase Date</label>
@@ -253,7 +253,7 @@ import LeftSideMenu from "../components/LeftSideMenu.vue";
 import { StreamBarcodeReader } from "vue-barcode-reader";
 import QRCodeVue3 from "qrcode-vue3";
 import axios from 'axios'
-
+import Swal from 'sweetalert2'
 
 export default {
     name: "PurchaseOrder",
@@ -302,6 +302,20 @@ export default {
         //         // $('#scanPO').model('close');
         //     }
         // },
+        showNotificationErrorNot() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Data Not Found !!!.'
+        })
+        },
+        showNotificationToken() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Data Not Found !!!.'
+        })
+        },
         checkIsDesktop() {
             this.isDesktop = window.innerWidth >= 768;
         },
@@ -381,7 +395,7 @@ export default {
                     this.poDate = ""
                     this.poReceive = ""
                     this.items = [];
-                    alert('Token Expired')
+                    this.showNotificationToken()
                     localStorage.removeItem('token')
                     this.$router.push('/')
                 } else if (error.message == 'Request failed with status code 404') {
@@ -391,7 +405,7 @@ export default {
                     this.poDate = ""
                     this.poReceive = ""
                     this.items = [];
-                    alert('Data Not Found')
+                    this.showNotificationErrorNot()
                 }
             })
         },
@@ -409,7 +423,8 @@ export default {
                     this.poDate = ""
                     this.poReceive = ""
                     this.items = [];
-                    alert('Token has expired!!! Please Login Again')
+                    this.showNotificationErrorNot()
+                    localStorage.removeItem('token')
                     this.$router.push('/')
                 }
                 else {
@@ -435,7 +450,7 @@ export default {
                     this.poDate = ""
                     this.poReceive = ""
                     this.items = [];
-                    alert('Token Expired')
+                    this.showNotificationErrorNot()
                     localStorage.removeItem('token')
                     this.$router.push('/')
                 } else if (error.message == 'Request failed with status code 404') {
@@ -445,7 +460,7 @@ export default {
                     this.poDate = ""
                     this.poReceive = ""
                     this.items = [];
-                    alert('Data Not Found')
+                    this.showNotificationErrorNot()
                 }
             })
         },
