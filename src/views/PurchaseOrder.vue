@@ -360,6 +360,13 @@ export default {
                 text: 'Data Not Found !!!.'
             })
         },
+        showNotificationSuccess() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Waww...',
+                text: 'Data Berhasil di validate'
+            })
+        },
         checkIsDesktop() {
             this.isDesktop = window.innerWidth >= 768;
         },
@@ -704,7 +711,17 @@ export default {
             axios.put('/v1/validate-purchase/validate/', data).then(response => {
                 console.log(response)
                 if (response.data.statusCode == '200') {
-                    alert(response.data.statusCodeDesc)
+                    this.showNotificationSuccess()
+                    this.pickingId = ""
+                    this.purchaseOrderLocationSourceId= ""
+                    this.purchaseOrderLocationDestinationId= ""
+                    this.purchaseOrderCompanyId= ""
+                    this.items = ""
+                    this.poName = ""
+                    this.poVendor = ""
+                    this.poDate = ""
+                    this.poReceive = ""
+                    this.items = [];
                 } else {
                     alert('Somethig Went Wrong!')
                 }
