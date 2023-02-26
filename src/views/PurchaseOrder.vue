@@ -21,12 +21,12 @@
 
                         </h2>
                         <div class="d-flex">
-                            
+
                             <button v-if="isDesktop" class="print_btn" @click="showModal">Scan Purchase Order</button>
                             <a href="scanPO" v-else class="scan_btn ms-4" @click="openCamera = !openCamera"
-                                    data-bs-toggle="modal" data-bs-target="#scanPO">
-                                    Scan Barcode PO
-                                </a>
+                                data-bs-toggle="modal" data-bs-target="#scanPO">
+                                Scan Barcode PO
+                            </a>
                         </div>
 
                         <div class="row purchase_form mt-5">
@@ -41,8 +41,8 @@
                             </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor</label>
-                                <input type="text" class="form-control" v-model="poVendor" 
-                                    id="" placeholder="" disabled="1">
+                                <input type="text" class="form-control" v-model="poVendor" id="" placeholder=""
+                                    disabled="1">
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Purchase Date</label>
@@ -95,7 +95,7 @@
         </div>
 
         <!-- print label Modal -->
-        <div class="modal fade" id="printlabel" tabindex="-1" aria-labelledby="printlabelLabel" aria-hidden="true">
+        <!-- <div class="modal fade" id="printlabel" tabindex="-1" aria-labelledby="printlabelLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -104,16 +104,6 @@
                     <div class="modal-body">
                         <div class="row purchase_form" v-for="(d, index) in items" :key="index">
                             <div class="col-12" v-for="(data, index1) in d.purchaseOrderLine" :key="index1">
-                                <!-- <div class="input-group mb-3">
-                                    <button class="input-group-text" type="button">
-                                        <img src="/assets/images/minus.svg" alt="" title="" />
-                                    </button>
-                                    <input type="text" class="form-control mb-0 text-center" id="" placeholder="">
-                                    <button class="input-group-text" type="button">
-                                        <img src="/assets/images/plus.svg" alt="" title="" />
-                                    </button>
-                                </div>-->
-
                                 <QRCodeVue3 :width="300" :height="300" v-if="data.productBarcode"
                                     :value="data.productBarcode" margin="0"
                                     :qrOptions='{ "typeNumber": "0", "mode": "Byte", "errorCorrectionLevel": "H" }'
@@ -137,6 +127,37 @@
                     </div>
                 </div>
             </div>
+        </div> -->
+
+        <!-- print label Modal -->
+        <div class="modal fade" id="printlabel" tabindex="-1" aria-labelledby="printlabelLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="printlabelLabel">Print Label</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row purchase_form">
+                            <div class="col-12">
+                                <div class="input-group mb-3">
+                                    <button class="input-group-text" type="button" @click="MinQty">
+                                        <img src="/assets/images/minus.svg" alt="" title="" />
+                                    </button>
+                                    <input type="text" class="form-control mb-0 text-center" v-model="quantity"
+                                        id="quantity" min="1">
+                                    <button class="input-group-text" type="button" @click="MaxQty">
+                                        <img src="/assets/images/plus.svg" alt="" title="" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" @click="printBarcode" class="btn btn-primary ms-4">Cetak Barcode</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="modal fade" id="scanitem" tabindex="-1" aria-labelledby="scanitemLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -148,18 +169,21 @@
                         <div class="row purchase_form">
                             <div class="col-12">
                                 <label class="form-label">Product Barcode</label>
-                                <input type="text" class="form-control" id="" placeholder="" v-model="productBarcode" v-on:change="searchProduct" ref="product">
+                                <input type="text" class="form-control" id="" placeholder="" v-model="productBarcode"
+                                    v-on:change="searchProduct" ref="product">
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Name Item</label>
-                                <input type="text" class="form-control" id="" placeholder="" v-model="productName" disabled="1">
+                                <input type="text" class="form-control" id="" placeholder="" v-model="productName"
+                                    disabled="1">
                             </div>
                             <div class="col-12">
                                 <div class="input-group mb-3">
                                     <button class="input-group-text" type="button">
                                         <img src="/assets/images/minus.svg" alt="" title="" />
                                     </button>
-                                    <input type="text" class="form-control mb-0 text-center" v-model="productQty" id="" placeholder="">
+                                    <input type="text" class="form-control mb-0 text-center" v-model="productQty" id=""
+                                        placeholder="">
                                     <button class="input-group-text" type="button">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
                                     </button>
@@ -251,9 +275,13 @@ import Navigation from "../components/Navigation.vue";
 import LeftSideMenu from "../components/LeftSideMenu.vue";
 // import { QrcodeStream } from 'vue3-qrcode-reader'
 import { StreamBarcodeReader } from "vue-barcode-reader";
-import QRCodeVue3 from "qrcode-vue3";
+// import QRCodeVue3 from "qrcode-vue3";
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import JsBarcode from 'jsbarcode';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
     name: "PurchaseOrder",
@@ -261,7 +289,7 @@ export default {
         Navigation,
         LeftSideMenu,
         StreamBarcodeReader,
-        QRCodeVue3,
+        // QRCodeVue3,
         // QrcodeStream,
         // QrcodeDropZone,
         // QrcodeCapture
@@ -283,8 +311,10 @@ export default {
             isDesktop: false,
             productBarcode: '',
             productName: '',
-            productQty:'',
+            productQty: '',
             items: [],
+            products: [],
+            quantity: 1
 
         }
     },
@@ -294,9 +324,9 @@ export default {
         this.focusInputPopUp()
         this.checkIsDesktop();
         window.addEventListener('resize', this.checkIsDesktop);
-        
+
     },
-    
+
     methods: {
         // onDecode (result) {
         //     this.result = result
@@ -306,18 +336,18 @@ export default {
         //     }
         // },
         showNotificationErrorNot() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Data Not Found !!!.'
-        })
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Data Not Found !!!.'
+            })
         },
         showNotificationToken() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Data Not Found !!!.'
-        })
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Data Not Found !!!.'
+            })
         },
         checkIsDesktop() {
             this.isDesktop = window.innerWidth >= 768;
@@ -328,7 +358,7 @@ export default {
         hideModal() {
             this.modalIsActive = false;
         },
-        resetText(){
+        resetText() {
             this.ponum = ''
         },
         focusInput() {
@@ -349,23 +379,23 @@ export default {
             this.items.forEach(x => {
                 if (x.productBarcode == this.productBarcode) {
                     this.productQty = x.productQtyReceived + 1
-                    this.productName= x.productName
-                } 
+                    this.productName = x.productName
+                }
             });
         },
         searchAndUpdateProduct() {
             let new_items = []
-            let done  = ''
+            let done = ''
             this.items.forEach(x => {
                 if (x.productBarcode == this.productBarcode) {
                     done = '1'
-                    new_items.push({ productBarcode: x.productBarcode,productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: this.productQty, status: '1' })
+                    new_items.push({ productBarcode: x.productBarcode, productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: this.productQty, status: '1' })
                 } else {
-                    new_items.push({ productBarcode: x.productBarcode,productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
+                    new_items.push({ productBarcode: x.productBarcode, productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
                 }
             });
             this.items = new_items
-            if (done == '1'){
+            if (done == '1') {
                 this.productQty = ''
                 this.productName = ''
                 this.productBarcode = ''
@@ -393,10 +423,10 @@ export default {
                     // for (let i = 0: i < )
                     this.items = []
                     response.data.data[0].purchaseOrderLine.forEach(x => {
-                        this.items.push({ productBarcode: x.productBarcode,productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
+                        this.items.push({ productBarcode: x.productBarcode, productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
                     });
 
-                    // this.items = response.data.data[0].purchaseOrderLine;
+                    this.products = response.data.data[0].purchaseOrderLine;
                     this.poName = response.data.data[0].purchaseOrderName
                     this.poVendor = response.data.data[0].purchaseOrderVendor
                     this.poDate = response.data.data[0].purchaseOrderDateOrder
@@ -452,6 +482,7 @@ export default {
                     });
 
                     // this.items = response.data.data[0].purchaseOrderLine;
+                    this.products = response.data.data[0].purchaseOrderLine;
                     this.poName = response.data.data[0].purchaseOrderName
                     this.poVendor = response.data.data[0].purchaseOrderVendor
                     this.poDate = response.data.data[0].purchaseOrderDateOrder
@@ -575,14 +606,31 @@ export default {
                     this.error = `ERROR: Camera error (${error.name})`;
                 }
             }
+        },
+        printBarcode() {
+            const docDefinition = { content: [] };
+
+            this.products.forEach(product => {
+                const canvas = document.createElement('canvas');
+                JsBarcode(canvas, product.productBarcode);
+                const imgData = canvas.toDataURL();
+                for (let i = 0; i < this.quantity; i++) {
+                    docDefinition.content.push({ image: imgData });
+                }
+            });
+            pdfMake.createPdf(docDefinition).print();
+        },
+        MinQty() {
+            this.quantity--;
+        },
+        MaxQty() {
+            this.quantity++;
         }
     }
 };
 </script>
 
 <style>
-
-
 .modal.is-active {
     display: flex;
     align-items: center;
