@@ -41,7 +41,7 @@
                             </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor</label>
-                                <input type="text" class="form-control" v-model="poVendor" v-on:change="searchAndUpdate"
+                                <input type="text" class="form-control" v-model="poVendor" 
                                     id="" placeholder="" disabled="1">
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
@@ -66,7 +66,7 @@
                                         <th class="text-center">Qty Request</th>
                                         <th class="text-center">Qty Received</th>
                                         <!-- <th class="text-center">Description</th> -->
-                                        <th class="text-center">UoM</th>
+                                        <!-- <th class="text-center">UoM</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,7 +74,7 @@
                                         <td class="text-center">{{ data.productName }}</td>
                                         <td class="text-center">{{ data.productQtyRequestPO }}</td>
                                         <td class="text-center">{{ data.productQtyReceived }}</td>
-                                        <td class="text-center">{{ data.status }}</td>
+                                        <!-- <td class="text-center">{{ data.status }}</td> -->
                                         <!-- <td  class="text-center">Bakso sapi</td> -->
                                     </tr>
                                 </tbody>
@@ -148,18 +148,18 @@
                         <div class="row purchase_form">
                             <div class="col-12">
                                 <label class="form-label">Product Barcode</label>
-                                <input type="text" class="form-control" id="" placeholder="" ref="product">
+                                <input type="text" class="form-control" id="" placeholder="" v-model="productBarcode" v-on:change="searchProduct" ref="product">
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Name Item</label>
-                                <input type="text" class="form-control" id="" placeholder="" disabled="1">
+                                <input type="text" class="form-control" id="" placeholder="" v-model="productName" disabled="1">
                             </div>
                             <div class="col-12">
                                 <div class="input-group mb-3">
                                     <button class="input-group-text" type="button">
                                         <img src="/assets/images/minus.svg" alt="" title="" />
                                     </button>
-                                    <input type="text" class="form-control mb-0 text-center" id="" placeholder="">
+                                    <input type="text" class="form-control mb-0 text-center" v-model="productQty" id="" placeholder="">
                                     <button class="input-group-text" type="button">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
                                     </button>
@@ -168,8 +168,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary ms-4">Done</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary ms-4" @click="searchAndUpdateProduct">ADD</button>
                     </div>
                 </div>
             </div>
@@ -281,6 +281,9 @@ export default {
             errorInItem: false,
             modalIsActive: false,
             isDesktop: false,
+            productBarcode: '',
+            productName: '',
+            productQty:'',
             items: [],
 
         }
@@ -335,26 +338,38 @@ export default {
             this.$refs.input.focus();
         },
         filteredItems() {
-            // return this.items.filter(item => {
-            //     return item.status.toLowerCase().includes('1')
-            // })
-            if (Array.isArray(this.items)) {
-                this.items.filter(item => item.status === '1');
-            }
+            return this.items.filter(item => {
+                return item.status.toLowerCase().includes('1')
+            })
+            // if (Array.isArray(this.items)) {
+            //     this.items.filter(item => item.status === '1');
+            // }
         },
-        searchAndUpdate() {
-            let new_items = []
+        searchProduct() {
             this.items.forEach(x => {
-                if (x.productName == this.poVendor) {
-                    new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived + 1, status: '1' })
+                if (x.productBarcode == this.productBarcode) {
+                    this.productQty = x.productQtyReceived + 1
+                    this.productName= x.productName
+                } 
+            });
+        },
+        searchAndUpdateProduct() {
+            let new_items = []
+            let done  = ''
+            this.items.forEach(x => {
+                if (x.productBarcode == this.productBarcode) {
+                    done = '1'
+                    new_items.push({ productBarcode: x.productBarcode,productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: this.productQty, status: '1' })
                 } else {
-                    new_items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
+                    new_items.push({ productBarcode: x.productBarcode,productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
                 }
             });
             this.items = new_items
-
-            
-
+            if (done == '1'){
+                this.productQty = ''
+                this.productName = ''
+                this.productBarcode = ''
+            }
         },
         GetBarcode() {
             let data = {
@@ -369,15 +384,16 @@ export default {
                     this.poVendor = ""
                     this.poDate = ""
                     this.poReceive = ""
-                    this.items = [];
+                    this.items = []
                     alert('Token has expired!!! Please Login Again')
                     this.$router.push('/')
                 } else {
                     // this.showModal = false
 
                     // for (let i = 0: i < )
+                    this.items = []
                     response.data.data[0].purchaseOrderLine.forEach(x => {
-                        this.items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
+                        this.items.push({ productBarcode: x.productBarcode,productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
                     });
 
                     // this.items = response.data.data[0].purchaseOrderLine;
