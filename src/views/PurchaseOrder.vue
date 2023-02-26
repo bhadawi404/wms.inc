@@ -73,7 +73,7 @@
                                     <tr v-for="data in filteredItems()" :key="data.id">
                                         <td class="text-center">{{ data.productName }}</td>
                                         <td class="text-center">{{ data.productQtyRequestPO }}</td>
-                                        <td class="text-center">{{ data.productQtyReceived }}</td>
+                                        <td class="text-center">{{ data.productQtyDone }}</td>
                                         <!-- <td class="text-center">{{ data.status }}</td> -->
                                         <!-- <td  class="text-center">Bakso sapi</td> -->
                                     </tr>
@@ -179,14 +179,14 @@
                             </div>
                             <div class="col-12">
                                 <div class="input-group mb-3">
-                                    <button class="input-group-text" type="button">
+                                    <!-- <button class="input-group-text" type="button">
                                         <img src="/assets/images/minus.svg" alt="" title="" />
-                                    </button>
+                                    </button> -->
                                     <input type="text" class="form-control mb-0 text-center" v-model="productQty" id=""
-                                        placeholder="">
-                                    <button class="input-group-text" type="button">
+                                        placeholder="" v-on:change="cekQty">
+                                    <!-- <button class="input-group-text" type="button">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
-                                    </button>
+                                    </button> -->
                                 </div>
                             </div>
                         </div>
@@ -314,7 +314,11 @@ export default {
             productQty: '',
             items: [],
             products: [],
-            quantity: 1
+            quantity: 1,
+            pickingId : '',
+            purchaseOrderLocationSourceId: '',
+            purchaseOrderLocationDestinationId: '',
+            purchaseOrderCompanyId: '',
 
         }
     },
@@ -335,6 +339,13 @@ export default {
         //         // $('#scanPO').model('close');
         //     }
         // },
+        showNotificationQtyProduct() {
+            Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'The quantity received cannot exceed the quantity requested !!!.'
+            })
+        },
         showNotificationErrorNot() {
             Swal.fire({
                 icon: 'error',
@@ -375,10 +386,18 @@ export default {
             //     this.items.filter(item => item.status === '1');
             // }
         },
+        cekQty() {
+            let product = this.items.find(item => item.productBarcode == this.productBarcode);
+            if (product.productQtyRequestPO<this.productQty){
+                this.productQty = product.productQtyRequestPO
+                this.showNotificationQtyProduct()
+                // alert("The quantity received cannot exceed the quantity requested")
+            }
+        },
         searchProduct() {
             this.items.forEach(x => {
                 if (x.productBarcode == this.productBarcode) {
-                    this.productQty = x.productQtyReceived + 1
+                    this.productQty = x.productQtyDone + 1
                     this.productName = x.productName
                 }
             });
@@ -389,9 +408,29 @@ export default {
             this.items.forEach(x => {
                 if (x.productBarcode == this.productBarcode) {
                     done = '1'
-                    new_items.push({ productBarcode: x.productBarcode, productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: this.productQty, status: '1' })
+                    new_items.push({ 
+                                productBarcode: x.productBarcode, 
+                                productName: x.productName, 
+                                productQtyRequestPO: x.productQtyRequestPO, 
+                                productQtyDone: this.productQty, 
+                                productId: x.productId, 
+                                orderLineId: x.orderLineId, 
+                                moveLineId: x.moveLineId, 
+                                moveId: x.moveId, 
+                                status: '1' 
+                            })
                 } else {
-                    new_items.push({ productBarcode: x.productBarcode, productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: x.status })
+                    new_items.push({ 
+                                productBarcode: x.productBarcode, 
+                                productName: x.productName, 
+                                productQtyRequestPO: x.productQtyRequestPO, 
+                                productQtyDone: x.productQtyDone, 
+                                productId: x.productId, 
+                                orderLineId: x.orderLineId, 
+                                moveLineId: x.moveLineId, 
+                                moveId: x.moveId, 
+                                status: x.status 
+                    })
                 }
             });
             this.items = new_items
@@ -415,6 +454,10 @@ export default {
                     this.poDate = ""
                     this.poReceive = ""
                     this.items = []
+                    this.pickingId = ""
+                    this.purchaseOrderLocationSourceId= ""
+                    this.purchaseOrderLocationDestinationId= ""
+                    this.purchaseOrderCompanyId= ""
                     alert('Token has expired!!! Please Login Again')
                     this.$router.push('/')
                 } else {
@@ -423,9 +466,22 @@ export default {
                     // for (let i = 0: i < )
                     this.items = []
                     response.data.data[0].purchaseOrderLine.forEach(x => {
-                        this.items.push({ productBarcode: x.productBarcode, productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
+                        this.items.push(
+                            {   productBarcode: x.productBarcode, 
+                                productName: x.productName, 
+                                productQtyRequestPO: x.productQtyRequestPO, 
+                                productQtyDone: x.productQtyDone, 
+                                productId: x.productId, 
+                                orderLineId: x.orderLineId, 
+                                moveLineId: x.moveLineId, 
+                                moveId: x.moveId, 
+                                status: '0' 
+                            })
                     });
-
+                    this.pickingId = response.data.data[0].pickingId;
+                    this.purchaseOrderLocationSourceId= response.data.data[0].purchaseOrderLocationSourceId;
+                    this.purchaseOrderLocationDestinationId= response.data.data[0].purchaseOrderLocationDestinationId;
+                    this.purchaseOrderCompanyId= response.data.data[0].purchaseOrderCompanyId;
                     this.products = response.data.data[0].purchaseOrderLine;
                     this.poName = response.data.data[0].purchaseOrderName
                     this.poVendor = response.data.data[0].purchaseOrderVendor
@@ -435,6 +491,10 @@ export default {
             }).catch(error => {
                 // alert(error.message)
                 if (error.message == 'Request failed with status code 401') {
+                    this.pickingId = ""
+                    this.purchaseOrderLocationSourceId= ""
+                    this.purchaseOrderLocationDestinationId= ""
+                    this.purchaseOrderCompanyId= ""
                     this.items = ""
                     this.poName = ""
                     this.poVendor = ""
@@ -445,6 +505,10 @@ export default {
                     localStorage.removeItem('token')
                     this.$router.push('/')
                 } else if (error.message == 'Request failed with status code 404') {
+                    this.pickingId = ""
+                    this.purchaseOrderLocationSourceId= ""
+                    this.purchaseOrderLocationDestinationId= ""
+                    this.purchaseOrderCompanyId= ""
                     this.items = ""
                     this.poName = ""
                     this.poVendor = ""
@@ -468,6 +532,10 @@ export default {
                     this.poVendor = ""
                     this.poDate = ""
                     this.poReceive = ""
+                    this.pickingId = ""
+                    this.purchaseOrderLocationSourceId= ""
+                    this.purchaseOrderLocationDestinationId= ""
+                    this.purchaseOrderCompanyId= ""
                     this.items = [];
                     this.showNotificationErrorNot()
                     localStorage.removeItem('token')
@@ -478,10 +546,23 @@ export default {
                     // this.showModal = false
                     // for (let i = 0: i < )
                     response.data.data[0].purchaseOrderLine.forEach(x => {
-                        this.items.push({ productName: x.productName, productQtyRequestPO: x.productQtyRequestPO, productQtyReceived: x.productQtyReceived, status: '0' })
+                        this.items.push({ 
+                                productBarcode: x.productBarcode, 
+                                productName: x.productName, 
+                                productQtyRequestPO: x.productQtyRequestPO, 
+                                productQtyDone: x.productQtyDone, 
+                                productId: x.productId, 
+                                orderLineId: x.orderLineId, 
+                                moveLineId: x.moveLineId, 
+                                moveId: x.moveId,  
+                                status: '0' 
+                        })
                     });
-
                     // this.items = response.data.data[0].purchaseOrderLine;
+                    this.pickingId = response.data.data[0].pickingId;
+                    this.purchaseOrderLocationSourceId= response.data.data[0].purchaseOrderLocationSourceId;
+                    this.purchaseOrderLocationDestinationId= response.data.data[0].purchaseOrderLocationDestinationId;
+                    this.purchaseOrderCompanyId= response.data.data[0].purchaseOrderCompanyId;
                     this.products = response.data.data[0].purchaseOrderLine;
                     this.poName = response.data.data[0].purchaseOrderName
                     this.poVendor = response.data.data[0].purchaseOrderVendor
@@ -491,6 +572,10 @@ export default {
             }).catch(error => {
                 // alert(error.message)
                 if (error.message == 'Request failed with status code 401') {
+                    this.pickingId = ""
+                    this.purchaseOrderLocationSourceId= ""
+                    this.purchaseOrderLocationDestinationId= ""
+                    this.purchaseOrderCompanyId= ""
                     this.items = ""
                     this.poName = ""
                     this.poVendor = ""
@@ -501,6 +586,10 @@ export default {
                     localStorage.removeItem('token')
                     this.$router.push('/')
                 } else if (error.message == 'Request failed with status code 404') {
+                    this.pickingId = ""
+                    this.purchaseOrderLocationSourceId= ""
+                    this.purchaseOrderLocationDestinationId= ""
+                    this.purchaseOrderCompanyId= ""
                     this.items = ""
                     this.poName = ""
                     this.poVendor = ""
@@ -573,7 +662,46 @@ export default {
         validateProduct() {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
-            axios.put('/v1/validate-purchase/validate/', this.items).then(response => {
+            // let product = this.items.find(item => item.status =='1');
+            // if (product.productQtyRequestPO<this.productQty){
+            //     this.productQty = product.productQtyRequestPO
+            //     this.showNotificationQtyProduct()
+            //     // alert("The quantity received cannot exceed the quantity requested")
+            // }
+            let data = {
+                'pickingId': this.pickingId,
+                'purchaseOrderLocationSourceId': this.purchaseOrderLocationSourceId,
+                'purchaseOrderLocationDestinationId': this.purchaseOrderLocationDestinationId,
+                'purchaseOrderCompanyId': this.purchaseOrderCompanyId,
+                'purchaseOrderLine': JSON.parse(JSON.stringify(this.items))
+            }
+
+            // let data = {
+            //     "purchaseOrderLocationSourceId": 4,
+            //     "purchaseOrderLocationDestinationId": 9,
+            //     "purchaseOrderCompanyId": 1,
+            //     "pickingId": 707,
+            //     "purchaseOrderLine": [
+            //         // {
+            //         //     "orderLineId": 156,
+            //         //     "moveId": 937,
+            //         //     "moveLineId": 643,
+            //         //     "productId": 5,
+            //         //     "productBarcode": "OF123456",
+            //         //     "productQtyDone": 2
+            //         // },
+            //         {
+            //             "orderLineId": 157,
+            //             "moveId": 938,
+            //             "moveLineId": 644,
+            //             "productId": 23,
+            //             "productBarcode": "1992300123999",
+            //             "productQtyDone": 3
+            //         }
+            //     ]
+            // }
+            // console.log(data)
+            axios.put('/v1/validate-purchase/validate/', data).then(response => {
                 console.log(response)
                 if (response.data.statusCode == '200') {
                     alert(response.data.statusCodeDesc)
