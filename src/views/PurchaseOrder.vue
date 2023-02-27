@@ -680,7 +680,7 @@ export default {
                 'purchaseOrderLocationSourceId': this.purchaseOrderLocationSourceId,
                 'purchaseOrderLocationDestinationId': this.purchaseOrderLocationDestinationId,
                 'purchaseOrderCompanyId': this.purchaseOrderCompanyId,
-                'purchaseOrderLine': JSON.parse(JSON.stringify(this.items.find(item => item.status == '1')))
+                'purchaseOrderLine': JSON.parse(JSON.stringify(this.items))
             }
 
             // let data = {
