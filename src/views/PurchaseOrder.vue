@@ -73,7 +73,11 @@
                                     <tr v-for="data in filteredItems()" :key="data.id">
                                         <td class="text-center">{{ data.productName }}</td>
                                         <td class="text-center">{{ data.productQtyRequestPO }}</td>
-                                        <td class="text-center">{{ data.productQtyDone }}</td>
+                                        <td class="text-center"><button class="input-group-text-inherit" type="button">
+                                        <img src="/assets/images/minus.svg" alt="" title="" />
+                                    </button><spacer type="horizontal" width="100" height="100"> ♢ </spacer>{{ data.productQtyDone }}<spacer type="horizontal" width="100" height="100"> ♢ </spacer><button class="input-group-text-inherit" type="button">
+                                        <img src="/assets/images/plus.svg" alt="" title="" />
+                                    </button></td>
                                         <!-- <td class="text-center">{{ data.status }}</td> -->
                                         <!-- <td  class="text-center">Bakso sapi</td> -->
                                     </tr>
@@ -164,7 +168,10 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="scanitemLabel">Scan Item</h1>
+                        
                     </div>
+                    <span>Please Scan Barcode Item below this</span>
+                    <br/>
                     <div class="modal-body">
                         <div class="row purchase_form">
                             <div class="col-12">
@@ -179,14 +186,14 @@
                             </div>
                             <div class="col-12">
                                 <div class="input-group mb-3">
-                                    <!-- <button class="input-group-text" type="button">
+                                    <button class="input-group-text" type="button"  @click="MinQtyProductScan">
                                         <img src="/assets/images/minus.svg" alt="" title="" />
-                                    </button> -->
+                                    </button>
                                     <input type="number" class="form-control mb-0 text-center" v-model="productQty" id=""
                                         placeholder="" v-on:change="cekQty">
-                                    <!-- <button class="input-group-text" type="button">
+                                    <button class="input-group-text" type="button"  @click="MaxQtyProductScan">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
-                                    </button> -->
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -208,6 +215,8 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="scanitemLabel">Scan PO</h1>
                     </div>
+                    <span>Please Scan PO Item below this</span>
+                    <br/>
                     <div class="modal-body-wms">
                         <div class="row">
                             <div class="col-12">
@@ -604,6 +613,7 @@ export default {
                     this.poReceive = ""
                     this.items = [];
                     this.showNotificationErrorNot()
+                    this.ponum = ""
                 }
             })
         },
@@ -770,6 +780,12 @@ export default {
         },
         MaxQty() {
             this.quantity++;
+        },
+        MinQtyProductScan() {
+            this.productQty--;
+        },
+        MaxQtyProductScan() {
+            this.productQty++;
         }
     }
 };
@@ -818,5 +834,19 @@ export default {
 
 .modal-body-wms {
     padding: 0 96px !important;
+}
+.input-group-text-inherit {
+    display: inherit;
+    align-items: center;
+    padding: -23.625rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
 }
 </style>
