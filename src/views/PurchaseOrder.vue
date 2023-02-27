@@ -182,7 +182,7 @@
                                     <!-- <button class="input-group-text" type="button">
                                         <img src="/assets/images/minus.svg" alt="" title="" />
                                     </button> -->
-                                    <input type="text" class="form-control mb-0 text-center" v-model="productQty" id=""
+                                    <input type="number" class="form-control mb-0 text-center" v-model="productQty" id=""
                                         placeholder="" v-on:change="cekQty">
                                     <!-- <button class="input-group-text" type="button">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
@@ -682,7 +682,7 @@ export default {
                 'purchaseOrderCompanyId': this.purchaseOrderCompanyId,
                 'purchaseOrderLine': JSON.parse(JSON.stringify(this.items))
             }
-
+            console.log(data)
             // let data = {
             //     "purchaseOrderLocationSourceId": 4,
             //     "purchaseOrderLocationDestinationId": 9,
