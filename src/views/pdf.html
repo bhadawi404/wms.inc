@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body{
+            margin: 0px;padding: 0px;
+            font-family: 'Roboto', sans-serif;
+        }
+        p{margin: 0px;}
+        .container_inside {
+            width: 600px;
+            margin: 0 auto;
+            border: 1px solid #555555;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .bg_grey {
+            background: #d9d9d9;
+            margin: 0px;
+            font-weight: 500;
+            padding: 8px;
+            margin-bottom: 5px;
+        }
+        .response_text{
+            display: flex;
+            justify-content: space-around;
+            align-items: end;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .float_right p {font-style: normal;font-weight: 400;}
+    </style>
+</head>
+<body>
+    <div class="container_inside">
+        <p class="bg_grey">
+            [YN10V00011S124] Bearing Needle
+        </p>
+        <img src="barcode_img.png">
+        <div class="response_text">
+            <div class="float_left">
+               <em>1. Response Api Productbarcode</em>
+            </div>
+            <div class="float_right">
+                <p>07 March 2023</p>
+                <em>2. ( Timestamp )</em>
+            </div>
+        </div>
+    </div>  
+</body>
+</html>

@@ -11,18 +11,18 @@
                     <div class="purchase_order">
                         <h2>Purchase Order
                             <div class="d-flex">
-                                <a href="printlabel" class="print_btn" data-bs-toggle="modal" data-bs-target="#printlabel">
+                                <button class="print_btn" @click="showPrintLabelModal">
                                     Print Label
-                                </a>
-                                <a href="scanitem" class="scan_btn ms-4" data-bs-toggle="modal" data-bs-target="#scanitem">
+                                </button>
+                                <a href="javascript:void(0)" class="scan_btn ms-4" @click="openScanItem" >
                                     Scan Item
                                 </a>
                             </div>
 
                         </h2>
                         <div class="d-flex">
-
                             <button v-if="isDesktop" class="print_btn" @click="showModal">Scan Purchase Order</button>
+                            <button v-if="isDesktop" class="scan_btn ms-4" @click="removeOrder">CLEAR DATA</button>
                             <a href="scanPO" v-else class="scan_btn ms-4" @click="openCamera = !openCamera"
                                 data-bs-toggle="modal" data-bs-target="#scanPO">
                                 Scan Barcode PO
@@ -65,6 +65,7 @@
                                         <th class="text-center">Product Name</th>
                                         <th class="text-center">Qty Request</th>
                                         <th class="text-center">Qty Received</th>
+                                        <th class="text-center">Action</th>
                                         <!-- <th class="text-center">Description</th> -->
                                         <!-- <th class="text-center">UoM</th> -->
                                     </tr>
@@ -78,6 +79,9 @@
                                     </button><spacer type="horizontal" width="100" height="100"> ♢ </spacer>{{ data.productQtyDone }}<spacer type="horizontal" width="100" height="100"> ♢ </spacer><button class="input-group-text-inherit" type="button">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
                                     </button></td>
+                                    <td>
+                                        <button type="button" class="btn btn-dm btn-danger" @click="removeItem(data.productId)">Remove</button>
+                                    </td>
                                         <!-- <td class="text-center">{{ data.status }}</td> -->
                                         <!-- <td  class="text-center">Bakso sapi</td> -->
                                     </tr>
@@ -134,7 +138,7 @@
         </div> -->
 
         <!-- print label Modal -->
-        <div class="modal fade" id="printlabel" tabindex="-1" aria-labelledby="printlabelLabel" aria-hidden="true">
+        <div class="modal" :class="{ 'is-active': printLabelModalIsActive }" id="printlabel" tabindex="-1" aria-labelledby="printlabelLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -157,8 +161,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" @click="printBarcode" class="btn btn-primary ms-4">Cetak Barcode</button>
+                        <button type="button" class="btn btn-secondary" @click="hidePrintLabelModal">Cancel</button>
+                        <button type="button" @click="exportToPDF" class="btn btn-primary ms-4">Cetak Barcode</button>
                     </div>
                 </div>
             </div>
@@ -190,7 +194,7 @@
                                         <img src="/assets/images/minus.svg" alt="" title="" />
                                     </button>
                                     <input type="number" class="form-control mb-0 text-center" v-model="productQty" id=""
-                                        placeholder="" v-on:change="cekQty">
+                                        placeholder="" >
                                     <button class="input-group-text" type="button"  @click="MaxQtyProductScan">
                                         <img src="/assets/images/plus.svg" alt="" title="" />
                                     </button>
@@ -199,7 +203,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" @click="closeScanModal" >Close</button>
                         <button type="button" class="btn btn-primary ms-4" @click="searchAndUpdateProduct">ADD</button>
                     </div>
                 </div>
@@ -221,8 +225,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <label class="form-label">Barcode PO</label>
-                                <input type="text" class="form-control col-12" v-model="ponum" v-on:change="GetBarcodePopup"
-                                    ref="input" />
+                                <input type="text" class="form-control col-12" v-model="ponum" v-on:change="GetBarcodePopup" ref="input" />
                             </div>
                         </div>
                     </div>
@@ -285,12 +288,15 @@ import LeftSideMenu from "../components/LeftSideMenu.vue";
 // import { QrcodeStream } from 'vue3-qrcode-reader'
 import { StreamBarcodeReader } from "vue-barcode-reader";
 // import QRCodeVue3 from "qrcode-vue3";
+import * as $ from 'jquery';
+// import bootstrap from 'bootstrap'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import JsBarcode from 'jsbarcode';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import html2pdf from "html2pdf.js";
 
 export default {
     name: "PurchaseOrder",
@@ -317,10 +323,11 @@ export default {
             retryButton: false,
             errorInItem: false,
             modalIsActive: false,
+            printLabelModalIsActive: false,
             isDesktop: false,
             productBarcode: '',
             productName: '',
-            productQty: '',
+            productQty: 1,
             items: [],
             products: [],
             quantity: 1,
@@ -338,6 +345,23 @@ export default {
         this.checkIsDesktop();
         window.addEventListener('resize', this.checkIsDesktop);
 
+    },
+    watch:{
+        productQty(val){
+            console.log(val)
+            let product = this.items.find(item => item.productBarcode == this.productBarcode);
+            if (product && product.productQtyRequestPO < val){
+                this.productQty = product.productQtyRequestPO
+                this.showNotificationQtyProduct()
+            }else if(val <= 0){
+                this.productQty = 1
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'The quantity cannot less or equal to zero!!!.'
+                })
+            }
+        }
     },
 
     methods: {
@@ -379,8 +403,18 @@ export default {
         checkIsDesktop() {
             this.isDesktop = window.innerWidth >= 768;
         },
+        showPrintLabelModal() {
+            this.quantity = 1
+            this.printLabelModalIsActive = true;
+        },
+        hidePrintLabelModal() {
+            this.quantity = 1
+            this.printLabelModalIsActive = false;
+        },
         showModal() {
+            this.ponum = ''
             this.modalIsActive = true;
+            this.$refs.input.focus();
         },
         hideModal() {
             this.modalIsActive = false;
@@ -402,9 +436,17 @@ export default {
             //     this.items.filter(item => item.status === '1');
             // }
         },
+        removeItem(id){
+            this.items = this.items.filter(item => {
+                if(item.productId == id){
+                    item.status = "0"
+                }
+                return item;
+            })
+        },
         cekQty() {
             let product = this.items.find(item => item.productBarcode == this.productBarcode);
-            if (product.productQtyRequestPO<this.productQty){
+            if (product.productQtyRequestPO < this.productQty){
                 this.productQty = product.productQtyRequestPO
                 this.showNotificationQtyProduct()
                 // alert("The quantity received cannot exceed the quantity requested")
@@ -451,9 +493,11 @@ export default {
             });
             this.items = new_items
             if (done == '1') {
-                this.productQty = ''
+                this.productQty = 1
                 this.productName = ''
                 this.productBarcode = ''
+                $('#scanitem').removeClass('show')
+                $('#scanitem').css({'display' : 'none'})
             }
         },
         GetBarcode() {
@@ -692,7 +736,6 @@ export default {
                 'purchaseOrderCompanyId': this.purchaseOrderCompanyId,
                 'purchaseOrderLine': JSON.parse(JSON.stringify(this.items))
             }
-            console.log(data)
             // let data = {
             //     "purchaseOrderLocationSourceId": 4,
             //     "purchaseOrderLocationDestinationId": 9,
@@ -762,6 +805,24 @@ export default {
                 }
             }
         },
+        exportToPDF() {
+        // const docDefinition = { content: [] };
+        let html = '';
+        var options = { day: 'numeric',month: 'long', year: 'numeric'  };
+        let pdfName = ''
+        this.products.forEach(product => {
+            const canvas = document.createElement('canvas');
+            JsBarcode(canvas, product.productBarcode);
+            const imgData = canvas.toDataURL();
+            pdfName = product.productBarcode
+            html += '<div class="container_inside"> <p class="bg_grey"> '+ product.productName +' </p><img src="'+imgData+'"> <div class="response_text"> <div class="float_left"> <em>'+ product.productBarcode +'</em> </div><div class="float_right"> <p>'+new Date().toLocaleDateString("en-US", options);+'</p></div></div></div>'
+        });
+
+        html2pdf('<!DOCTYPE html><html lang="en"><head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Barcode</title> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet"> <style>body{margin: 0px;padding: 0px; font-family: "Roboto", sans-serif;}p{margin: 0px;}.container_inside{width: 600px; margin: 0 auto; border: 1px solid #555555; text-align: center; margin-top: 30px;}.bg_grey{background: #d9d9d9; margin: 0px; font-weight: 500; padding: 8px; margin-bottom: 5px;}.response_text{display: flex; justify-content: space-around; align-items: end; margin-bottom: 20px; font-weight: 700;}.float_right p{font-style: normal;font-weight: 400;}</style></head><body>'+html+' </body></html>', {
+                    margin: 1,
+                    filename: pdfName+".pdf",
+                });
+        },
         printBarcode() {
             const docDefinition = { content: [] };
 
@@ -786,7 +847,26 @@ export default {
         },
         MaxQtyProductScan() {
             this.productQty++;
-        }
+        },
+        removeOrder(){
+            this.items = []
+            this.products = []
+        },
+        openScanItem(){
+            this.productBarcode = ''
+            this.productName = ''
+            this.productQty = 1
+            $('#scanitem').addClass('show')
+            $('#scanitem').css({'display' : 'block'})
+            this.$refs.product.focus();
+        },
+        closeScanModal(){
+            this.productBarcode = ''
+            this.productName = ''
+            this.productQty = 1
+            $('#scanitem').removeClass('show')
+            $('#scanitem').css({'display' : 'none'})
+        },
     }
 };
 </script>
