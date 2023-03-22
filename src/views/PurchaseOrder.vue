@@ -11,9 +11,9 @@
                     <div class="purchase_order">
                         <h2>Purchase Order
                             <div class="d-flex">
-                                <button class="print_btn" @click="showPrintLabelModal">
+                                <!-- <button class="print_btn" @click="showPrintLabelModal">
                                     Print Label
-                                </button>
+                                </button> -->
                                 <a href="javascript:void(0)" class="scan_btn ms-4" @click="openScanItem" >
                                     Scan Item
                                 </a>
@@ -35,10 +35,6 @@
                                 <input type="text" class="form-control" v-model="poName" v-on:change="GetBarcode" ref="po"
                                     placeholder="">
                             </div>
-                            <!-- <div class="col-md-6 col-sm-12 col-12">
-                                <label class="form-label">Purchase Agreement</label>
-                                <input type="text" class="form-control" id="" placeholder="">
-                            </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Vendor</label>
                                 <input type="text" class="form-control" v-model="poVendor" id="" placeholder=""
@@ -48,10 +44,6 @@
                                 <label class="form-label">Purchase Date</label>
                                 <input type="text" class="form-control" v-model="poDate" id="" placeholder="" disabled="1">
                             </div>
-                            <!-- <div class="col-md-6 col-sm-12 col-12">
-                                <label class="form-label">Vendor Refference</label>
-                                <input type="text" class="form-control" id="" placeholder="">
-                            </div> -->
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Receipt Date</label>
                                 <input type="text" class="form-control" v-model="poReceive" id="" placeholder=""
@@ -66,24 +58,24 @@
                                         <th class="text-center">Qty Request</th>
                                         <th class="text-center">Qty Received</th>
                                         <th class="text-center">Action</th>
-                                        <!-- <th class="text-center">Description</th> -->
-                                        <!-- <th class="text-center">UoM</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="data in filteredItems()" :key="data.id">
                                         <td class="text-center">{{ data.productName }}</td>
                                         <td class="text-center">{{ data.productQtyRequestPO }}</td>
-                                        <td class="text-center"><button class="input-group-text-inherit" type="button">
-                                        <img src="/assets/images/minus.svg" alt="" title="" />
-                                    </button><spacer type="horizontal" width="100" height="100"> ♢ </spacer>{{ data.productQtyDone }}<spacer type="horizontal" width="100" height="100"> ♢ </spacer><button class="input-group-text-inherit" type="button">
-                                        <img src="/assets/images/plus.svg" alt="" title="" />
-                                    </button></td>
+                                        <td class="text-center">
+                                        <!-- <button class="input-group-text-inherit" type="button">
+                                            <img src="/assets/images/minus.svg" alt="" title="" />
+                                        </button> -->
+                                        <spacer type="horizontal" width="100" height="100"> ♢ </spacer>{{ data.productQtyDone }}<spacer type="horizontal" width="100" height="100"> ♢ </spacer>
+                                        <!-- <button class="input-group-text-inherit" type="button">
+                                            <img src="/assets/images/plus.svg" alt="" title="" />
+                                        </button> -->
+                                        </td>
                                     <td>
                                         <button type="button" class="btn btn-dm btn-danger" @click="removeItem(data.productId)">Remove</button>
                                     </td>
-                                        <!-- <td class="text-center">{{ data.status }}</td> -->
-                                        <!-- <td  class="text-center">Bakso sapi</td> -->
                                     </tr>
                                 </tbody>
                             </table>
@@ -94,48 +86,11 @@
 
                                 <img src="/assets/images/checkmark.png" alt="" title="" class="me-2" /> Validate
                             </button>
-                            <!-- <a href="#" >
-                            </a> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- print label Modal -->
-        <!-- <div class="modal fade" id="printlabel" tabindex="-1" aria-labelledby="printlabelLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="printlabelLabel">Print Label</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row purchase_form" v-for="(d, index) in items" :key="index">
-                            <div class="col-12" v-for="(data, index1) in d.purchaseOrderLine" :key="index1">
-                                <QRCodeVue3 :width="300" :height="300" v-if="data.productBarcode"
-                                    :value="data.productBarcode" margin="0"
-                                    :qrOptions='{ "typeNumber": "0", "mode": "Byte", "errorCorrectionLevel": "H" }'
-                                    :imageOptions='{ "hideBackgroundDots": true, "imageSize": 0.4, "margin": 0 }'
-                                    :dotsOptions='{ "type": "dots", "color": "#1a191a" }'
-                                    :backgroundOptions='{ "color": "#ffffff" }'
-                                    :dotsOptionsHelper='{ "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#6a1a4c", "color2": "#6a1a4c", "rotation": "0" } }'
-                                    :cornersSquareOptions='{ "type": "square", "color": "#000000" }'
-                                    :cornersSquareOptionsHelper='{ "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#000000", "color2": "#000000", "rotation": "0" } }'
-                                    :cornersDotOptions='{ "type": "dot", "color": "#000000", "gradient": null }'
-                                    :cornersDotOptionsHelper='{ "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#000000", "color2": "#000000", "rotation": "0" } }'
-                                    :backgroundOptionsHelper='{ "colorType": { "single": true, "gradient": false }, "gradient": { "linear": true, "radial": false, "color1": "#ffffff", "color2": "#ffffff", "rotation": "0" } }'
-                                    myclass="my-qur"></QRCodeVue3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-info" @click="downloadQrCode">Download</button>
-                        <button type="button" class="btn btn-primary">Done</button>
-                    </div>
-                </div>
-            </div>
-        </div> -->
 
         <!-- print label Modal -->
         <div class="modal" :class="{ 'is-active': printLabelModalIsActive }" id="printlabel" tabindex="-1" aria-labelledby="printlabelLabel" aria-hidden="true">
@@ -231,7 +186,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary col-12" @click="hideModal">Cancel</button>
-                        <!-- <button type="button" class="btn btn-primary" @click="resetText">Reset</button> -->
                     </div>
                 </div>
             </div>
@@ -246,22 +200,6 @@
                     </div>
                     <div class="modal-body">
                         <div class="row purchase_form">
-                            <!-- <div class="col-12">
-                                <label class="form-label">Name Item</label>
-                                <input type="text" class="form-control" id="" placeholder="">
-                            </div>
-                            <div class="col-12">
-                                <div class="input-group mb-3">
-                                    <button class="input-group-text" type="button">
-                                        <img src="/assets/images/minus.svg" alt="" title="" />
-                                    </button>
-                                    <input type="text" class="form-control mb-0 text-center" id="" placeholder="">
-                                    <button class="input-group-text" type="button">
-                                        <img src="/assets/images/plus.svg" alt="" title="" />
-                                    </button>
-                                </div>                                
-                            </div> -->
-                            <!-- <qrcode-stream @decode="onDecode" @init="onInit" v-if="openCamera" /> -->
                             <StreamBarcodeReader @decode="(a, b, c) => onDecode(a, b, c)" @loaded="() => onLoaded()"
                                 v-if="openCamera"></StreamBarcodeReader>
                             <span v-if="errorInItem">Item Not Found!</span>
@@ -304,10 +242,6 @@ export default {
         Navigation,
         LeftSideMenu,
         StreamBarcodeReader,
-        // QRCodeVue3,
-        // QrcodeStream,
-        // QrcodeDropZone,
-        // QrcodeCapture
     },
     data() {
         return {
@@ -365,13 +299,6 @@ export default {
     },
 
     methods: {
-        // onDecode (result) {
-        //     this.result = result
-        //     console.log(result)
-        //     if(result){
-        //         // $('#scanPO').model('close');
-        //     }
-        // },
         showNotificationQtyProduct() {
             Swal.fire({
             icon: 'error',
@@ -432,9 +359,6 @@ export default {
             return this.items.filter(item => {
                 return item.status.toLowerCase().includes('1')
             })
-            // if (Array.isArray(this.items)) {
-            //     this.items.filter(item => item.status === '1');
-            // }
         },
         removeItem(id){
             this.items = this.items.filter(item => {
@@ -450,7 +374,6 @@ export default {
             if (product.productQtyRequestPO < this.productQty){
                 this.productQty = product.productQtyRequestPO
                 this.showNotificationQtyProduct()
-                // alert("The quantity received cannot exceed the quantity requested")
             }
         },
         searchProduct() {
@@ -522,9 +445,6 @@ export default {
                     alert('Token has expired!!! Please Login Again')
                     this.$router.push('/')
                 } else {
-                    // this.showModal = false
-
-                    // for (let i = 0: i < )
                     this.items = []
                     response.data.data[0].purchaseOrderLine.forEach(x => {
                         this.items.push(
@@ -550,7 +470,6 @@ export default {
                     this.poReceive = response.data.data[0].purchaseOrderReceiptDate
                 }
             }).catch(error => {
-                // alert(error.message)
                 if (error.message == 'Request failed with status code 401') {
                     this.pickingId = ""
                     this.purchaseOrderLocationSourceId= ""
@@ -604,8 +523,6 @@ export default {
                 }
                 else {
                     this.hideModal();
-                    // this.showModal = false
-                    // for (let i = 0: i < )
                     response.data.data[0].purchaseOrderLine.forEach(x => {
                         this.items.push({ 
                                 productBarcode: x.productBarcode, 
@@ -619,7 +536,6 @@ export default {
                                 status: '0' 
                         })
                     });
-                    // this.items = response.data.data[0].purchaseOrderLine;
                     this.pickingId = response.data.data[0].pickingId;
                     this.purchaseOrderLocationSourceId= response.data.data[0].purchaseOrderLocationSourceId;
                     this.purchaseOrderLocationDestinationId= response.data.data[0].purchaseOrderLocationDestinationId;
@@ -631,7 +547,6 @@ export default {
                     this.poReceive = response.data.data[0].purchaseOrderReceiptDate
                 }
             }).catch(error => {
-                // alert(error.message)
                 if (error.message == 'Request failed with status code 401') {
                     this.pickingId = ""
                     this.purchaseOrderLocationSourceId= ""
@@ -667,17 +582,9 @@ export default {
             this.barcode = a, b, c;
             this.openCamera = false
             this.retryButton = true
-            // var modalToggle =  document.getElementById('closeModal') // relatedTarget
-            //         modalToggle.click()
             if (a) {
                 this.scanOrder()
             }
-            // if (this.id) clearTimeout(this.id);
-            // this.id = setTimeout(() => {
-            //     if (this.text === a) {
-            //     this.text = "";
-            //     }
-            // }, 5000);
         },
         onLoaded() {
             console.log("load");
@@ -689,11 +596,9 @@ export default {
         downloadQrCode() {
             const image = document.querySelector(".my-qur img");
             const canvas = document.createElement("canvas"); canvas.width = image.width; canvas.height = image.height; const context = canvas.getContext("2d"); context.drawImage(image, 0, 0, image.width, image.height);
-            // Get the base64 encoded data of the image
             const url = canvas.toDataURL("image/png");
             var link = document.createElement("a");
             document.body.appendChild(link);
-            // for Firefox 
             link.setAttribute("href", url);
             const fileName = (new Date()).toLocaleString() + '-qr-code.png'
             link.setAttribute("download", fileName);
@@ -724,12 +629,6 @@ export default {
         validateProduct() {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
-            // let product = this.items.find(item => item.status =='1');
-            // if (product.productQtyRequestPO<this.productQty){
-            //     this.productQty = product.productQtyRequestPO
-            //     this.showNotificationQtyProduct()
-            //     // alert("The quantity received cannot exceed the quantity requested")
-            // }
             let data = {
                 'pickingId': this.pickingId,
                 'purchaseOrderLocationSourceId': this.purchaseOrderLocationSourceId,
@@ -737,31 +636,7 @@ export default {
                 'purchaseOrderCompanyId': this.purchaseOrderCompanyId,
                 'purchaseOrderLine': JSON.parse(JSON.stringify(this.items))
             }
-            // let data = {
-            //     "purchaseOrderLocationSourceId": 4,
-            //     "purchaseOrderLocationDestinationId": 9,
-            //     "purchaseOrderCompanyId": 1,
-            //     "pickingId": 707,
-            //     "purchaseOrderLine": [
-            //         // {
-            //         //     "orderLineId": 156,
-            //         //     "moveId": 937,
-            //         //     "moveLineId": 643,
-            //         //     "productId": 5,
-            //         //     "productBarcode": "OF123456",
-            //         //     "productQtyDone": 2
-            //         // },
-            //         {
-            //             "orderLineId": 157,
-            //             "moveId": 938,
-            //             "moveLineId": 644,
-            //             "productId": 23,
-            //             "productBarcode": "1992300123999",
-            //             "productQtyDone": 3
-            //         }
-            //     ]
-            // }
-            // console.log(data)
+           
             axios.put('/v1/validate-purchase/validate/', data).then(response => {
                 console.log(response)
                 if (response.data.statusCode == '200') {
@@ -807,7 +682,6 @@ export default {
             }
         },
         exportToPDF() {
-        // const docDefinition = { content: [] };
         let html = '';
         var options = { day: 'numeric',month: 'long', year: 'numeric'  };
         let pdfName = ''
@@ -903,17 +777,14 @@ export default {
     --bs-modal-footer-bg: ;
     --bs-modal-footer-border-color: var(--bs-border-color);
     --bs-modal-footer-border-width: 1px;
-    /* position: fixed; */
     top: 0;
     left: 0;
     z-index: var(--bs-modal-zindex);
-    /* display: none; */
     width: 100%;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     outline: 0;
-    /* background-color: var(--bs-backdrop-bg); */
 }
 
 
