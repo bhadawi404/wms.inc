@@ -440,6 +440,7 @@ export default {
             this.items = this.items.filter(item => {
                 if(item.productId == id){
                     item.status = "0"
+                    item.productQtyDone = 0
                 }
                 return item;
             })
