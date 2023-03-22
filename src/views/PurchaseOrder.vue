@@ -852,6 +852,10 @@ export default {
         removeOrder(){
             this.items = []
             this.products = []
+            this.poName = ""
+            this.poVendor = ""
+            this.poDate = ""
+            this.poReceive = ""
         },
         openScanItem(){
             this.productBarcode = ''
