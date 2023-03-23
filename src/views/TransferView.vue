@@ -466,6 +466,7 @@ export default {
                                 productQtyDone: x.productQtyDone, 
                                 productId: x.productId, 
                                 moveLineId: x.moveLineId, 
+                                productQtyReceived : x.productQtyReceived,
                                 moveId: x.moveId, 
                                 status: '0' 
                             })
@@ -545,6 +546,7 @@ export default {
                             productName: x.productName, 
                             productQtyRequestTransfer: x.productQtyReceived, 
                             productQtyDone: x.productQtyDone, 
+                            productQtyReceived : x.productQtyReceived,
                             productId: x.productId, 
                             moveLineId: x.moveLineId, 
                             moveId: x.moveId, 
@@ -654,13 +656,12 @@ export default {
             }
             let url="";
             if (this.configOptions == '1'){
-                url = '/v1/scan/internal-transfer-out/validate/';
+                url = '/v1/validate-Internal-transfer-out/validate/';
             }else{
-                url = '/v1/scan/internal-transfer-in/validate/';
+                url = '/v1/validate-Internal-transfer-in/validate/';
             }
-            alert("bisa");
             axios.put(url, data).then(response => {
-                console.log(response)
+                console.log(data)
                 if (response.data.statusCode == '200') {
                     this.showNotificationSuccess()
                     this.pickingId = ""
