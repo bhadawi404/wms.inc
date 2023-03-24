@@ -80,9 +80,11 @@
                             </table>
                         </div>
                         <div class="text-end">
-                            <a href="#" class="btn-login">
+                            <button type="button" class="btn-login" :disabled="this.items.length == 0"
+                                @click="validateProduct">
+
                                 <img src="/assets/images/checkmark.png" alt="" title="" class="me-2" /> Validate
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -249,6 +251,9 @@ export default {
             items: [],
             products: [],
             pickingId : '',
+            consumeId:'',
+            destinationId:'',
+            locationSourceId:''
         }
 
     },
@@ -411,6 +416,9 @@ export default {
                     this.SourceLocation = ""
                     this.WoNumber = ""
                     this.CompanyId = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.showNotificationErrorNot()
                     localStorage.removeItem('token')
@@ -431,6 +439,9 @@ export default {
                                 status: '0'
                             })
                     });
+                    this.consumeId = response.data.data[0].consumeId;
+                    this.destinationId = response.data.data[0].LocationDestinationId;
+                    this.locationSourceId = response.data.data[0].LocationSourceId;
                     this.pickingId = response.data.data[0].pickingId;
                     this.SourceLocation = response.data.data[0].SourceLocation;
                     this.WoNumber = response.data.data[0].assignmentId;
@@ -448,6 +459,9 @@ export default {
                     this.SourceLocation = ""
                     this.WoNumber = ""
                     this.CompanyId = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.showNotificationToken()
                     localStorage.removeItem('token')
@@ -457,6 +471,9 @@ export default {
                     this.SourceLocation = ""
                     this.WoNumber = ""
                     this.CompanyId = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.showNotificationErrorNot()
                     this.consumeNumber=""
@@ -479,6 +496,9 @@ export default {
                     this.AssetName = ""
                     this.MaterialNumber = ""
                     this.ReportDate = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.products = []
                     this.showNotificationErrorNot()
@@ -500,6 +520,9 @@ export default {
                                 status: '0'
                             })
                     });
+                    this.consumeId = response.data.data[0].consumeId;
+                    this.destinationId = response.data.data[0].LocationDestinationId;
+                    this.locationSourceId = response.data.data[0].LocationSourceId;
                     this.pickingId = response.data.data[0].pickingId;
                     this.SourceLocation = response.data.data[0].SourceLocation;
                     this.WoNumber = response.data.data[0].assignmentId;
@@ -520,6 +543,9 @@ export default {
                     this.AssetName = ""
                     this.MaterialNumber = ""
                     this.ReportDate = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.products = []
                     this.showNotificationToken()
@@ -533,6 +559,9 @@ export default {
                     this.AssetName = ""
                     this.MaterialNumber = ""
                     this.ReportDate = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.products = []
                     this.showNotificationErrorNot()
@@ -572,6 +601,39 @@ export default {
             this.MaterialNumber = ""
             this.ReportDate = ""
             this.ConsumeNumber=""
+        },
+        validateProduct() {
+            let token = localStorage.getItem('token')
+            axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
+            let data = {
+                'pickingId': this.pickingId,
+                'consumeId': this.consumeId,
+                'LocationSourceId': this.locationSourceId,
+                'LocationDestinationId': this.destinationId,
+                'CompanyId': this.CompanyId,
+                'ConsumeLine': JSON.parse(JSON.stringify(this.items))
+            }
+           
+            axios.put('/v1/validate-consume/validate/', data).then(response => {
+                console.log(response)
+                if (response.data.statusCode == '200') {
+                    this.showNotificationSuccess()
+                    this.items = []
+                    this.products = []
+                    this.pickingId = ""
+                    this.SourceLocation = ""
+                    this.WoNumber = ""
+                    this.CompanyId = ""
+                    this.AssetName = ""
+                    this.MaterialNumber = ""
+                    this.ReportDate = ""
+                    this.ConsumeNumber=""
+                } else {
+                    alert('Somethig Went Wrong!')
+                }
+            }).catch(error => {
+                console.log(error)
+            })
         },
     },
 };
