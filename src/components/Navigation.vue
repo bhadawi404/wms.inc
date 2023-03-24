@@ -14,6 +14,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end p-0">
                         <li><button class="dropdown-item" type="button">ID</button></li>
+                        <li><button class="dropdown-item" type="button" @click="logout()">Logout</button></li>
                     </ul>
                 </div>
             </form>
@@ -25,6 +26,12 @@
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Navigation',
+    methods: {
+        logout(){
+            localStorage.removeItem('token')
+            this.$router.push('/')
+        }
+    }
 
 }
 </script>
