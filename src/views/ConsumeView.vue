@@ -601,6 +601,9 @@ export default {
             this.MaterialNumber = ""
             this.ReportDate = ""
             this.ConsumeNumber=""
+            this.consumeId = ""
+            this.destinationId = ""
+            this.locationSourceId = ""
         },
         validateProduct() {
             let token = localStorage.getItem('token')
