@@ -246,13 +246,16 @@ export default {
             SourceLocation:"",
             ReturnDate: "",
             MaterialNumber: "",
+            ReturnId:"",
             WoNumber: "",
             productBarcode: '',
             productName: '',
             productQty: 1,
             items: [],
             products: [],
-            locationSourceId:''
+            locationSourceId:'',
+            pickingId:'',
+            destinationId:''
         }
 
     },
@@ -435,6 +438,7 @@ export default {
                                 status: '0'
                             })
                     });
+                    this.ReturnId = response.data.data[0].ReturnId;
                     this.destinationId = response.data.data[0].LocationDestinationId;
                     this.locationSourceId = response.data.data[0].LocationSourceId;
                     this.pickingId = response.data.data[0].pickingId;
@@ -489,6 +493,7 @@ export default {
                     this.ReturnDate= "",
                     this.MaterialNumber= "",
                     this.WoNumber= "",
+                    this.ReturnId="",
                     this.items = [];
                     this.products = []
                     this.showNotificationErrorNot()
@@ -509,7 +514,7 @@ export default {
                                 status: '0'
                             })
                     });
-                    this.consumeId = response.data.data[0].consumeId;
+                    this.ReturnId = response.data.data[0].ReturnId;
                     this.destinationId = response.data.data[0].LocationDestinationId;
                     this.locationSourceId = response.data.data[0].LocationSourceId;
                     this.pickingId = response.data.data[0].pickingId;
@@ -596,14 +601,14 @@ export default {
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             let data = {
                 'pickingId': this.pickingId,
-                'consumeId': this.consumeId,
+                'ReturnId': this.ReturnId,
                 'LocationSourceId': this.locationSourceId,
                 'LocationDestinationId': this.destinationId,
                 'CompanyId': this.CompanyId,
-                'ConsumeLine': JSON.parse(JSON.stringify(this.items))
+                'ReturnLine': JSON.parse(JSON.stringify(this.items))
             }
            
-            axios.put('/v1/validate-consume/validate/', data).then(response => {
+            axios.put('/v1/validate-return/validate/', data).then(response => {
                 console.log(response)
                 if (response.data.statusCode == '200') {
                     this.showNotificationSuccess()

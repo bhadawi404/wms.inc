@@ -55,4 +55,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 * Scan barcode Return
 * Scan barcode Item Return
 * Validate quantity Return cannot exceed the quantity requested
-* Clear data Transfer Issued
+* Clear data Return Issued
+* Validate Return 
