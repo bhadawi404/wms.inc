@@ -14,16 +14,16 @@
                                 <!-- <a href="printlabel" class="print_btn" data-bs-toggle="modal" data-bs-target="#printlabel">
                                     Print Label
                                 </a> -->
-                                <a href="scanitem" class="scan_btn ms-4" data-bs-toggle="modal" data-bs-target="#scanitem">
+                                <a href="javascript:void(0)" class="scan_btn ms-4" @click="openScanItem" >
                                     Scan Item
                                 </a>
                             </div>
                         </h2>
                         <div class="d-flex">
                             <button v-if="isDesktop" class="print_btn" @click="showModal">Scan Consume</button>
-                            <button v-if="isDesktop" class="scan_btn ms-4" @click="removeOrder">Clear Data</button>
-                            <a href="scanPO" v-else class="scan_btn ms-4" @click="openCamera = !openCamera"
-                                data-bs-toggle="modal" data-bs-target="#scanPO">
+                            <button v-if="isDesktop" class="scan_btn ms-4" @click="removeConsume">Clear Data</button>
+                            <a href="scanConsume" v-else class="scan_btn ms-4" @click="openCamera = !openCamera"
+                                data-bs-toggle="modal" data-bs-target="#scanConsume">
                                 Scan Consume
                             </a>
                         </div>
@@ -31,7 +31,7 @@
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Consume Number</label>
                                 <input type="text" class="form-control" id="" placeholder="" ref="consume"
-                                    v-on:change="GetBarcode" v-model="ConsumeNumber">
+                                    v-on:change="GetBarcode" v-model="ConsumeNumber" readonly>
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Source Location</label>
@@ -63,26 +63,28 @@
                                         <th class="text-center">Product Name</th>
                                         <th class="text-center">Qty Request</th>
                                         <th class="text-center">Qty Done</th>
-                                        <th class="text-center">Qty Return</th>
-                                        <th class="text-center">UoM</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="text-center">Bakso</td>
-                                        <td class="text-center">10</td>
-                                        <td class="text-center">8</td>
-                                        <td class="text-center">8</td>
-                                        <td class="text-center">-</td>
+                                    <tr v-for="data in filteredItems()" :key="data.id">
+                                        <td class="text-center">{{ data.productName }}</td>
+                                        <td class="text-center">{{ data.productQtyDemand }}</td>
+                                        <td class="text-center"> <spacer type="horizontal" width="100" height="100"></spacer>{{ data.productQtyDone }}<spacer type="horizontal" width="100" height="100"></spacer></td>
+                                        <td>
+                                        <button type="button" class="btn btn-dm btn-danger" @click="removeItem(data.productId)">Remove</button>
+                                    </td>
                                     </tr>
 
                                 </tbody>
                             </table>
                         </div>
                         <div class="text-end">
-                            <a href="#" class="btn-login">
+                            <button type="button" class="btn-login" :disabled="this.items.length == 0"
+                                @click="validateProduct">
+
                                 <img src="/assets/images/checkmark.png" alt="" title="" class="me-2" /> Validate
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -162,6 +164,57 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fide" :class="{ 'is-active': modalIsActive }" role="dialog" tabindex="-1"
+            aria-labelledby="scanitemLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-background" @click="hideModal"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="scanitemLabel">Scan Consume</h1>
+                    </div>
+                    <span>Please Scan Consume Item below this</span>
+                    <br/>
+                    <div class="modal-body-wms">
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="form-label">Barcode Consume</label>
+                                <input type="text" class="form-control col-12" v-model="consumeNo" v-on:change="GetBarcodePopup" ref="consumeNo" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary col-12" @click="hideModal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="scanConsume" tabindex="-1" aria-labelledby="scanPOLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="scanPOLabel">Scan Barcode PO</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row purchase_form">
+                            <StreamBarcodeReader @decode="(a, b, c) => onDecode(a, b, c)" @loaded="() => onLoaded()"
+                                v-if="openCamera"></StreamBarcodeReader>
+                            <span v-if="errorInItem">Item Not Found!</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="closeModal" data-bs-dismiss="modal"
+                            @click="openCamera = !openCamera" v-if="!retryButton">Cancel</button>
+                        <router-link to="/scan-barcode" class="btn btn-secondary text-decoration-none" v-if="retryButton">
+                            Cancel </router-link>
+                        <button type="button" class="btn btn-primary ms-4" v-if="!retryButton">Done</button>
+                        <button type="button" class="btn btn-primary ms-4" v-if="retryButton"
+                            @click="clickRetryButton">Retry</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
   
@@ -179,7 +232,12 @@ export default {
     },
     data() {
         return {
+            modalIsActive: false,
             isDesktop: false,
+            openCamera: false,
+            retryButton: false,
+            errorInItem: false,
+            printLabelModalIsActive: false,
             ConsumeNumber: "",
             SourceLocation: "",
             CompanyId: "",
@@ -192,15 +250,53 @@ export default {
             productQty: 1,
             items: [],
             products: [],
+            pickingId : '',
+            consumeId:'',
+            destinationId:'',
+            locationSourceId:''
         }
 
     },
     mounted() {
-        this.focusInput();
+        // this.focusInput()
+        this.focusInputPopUp()
+        this.checkIsDesktop();
+        window.addEventListener('resize', this.checkIsDesktop);
+    },
+    watch:{
+        productQty(val){
+            console.log(val)
+            let product = this.items.find(item => item.productBarcode == this.productBarcode);
+            if (product && product.productQtyDemand < val){
+                this.productQty = product.productQtyDemand
+                this.showNotificationQtyProduct()
+            }else if(val <= 0){
+                this.productQty = 1
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'The quantity cannot less or equal to zero!!!.'
+                })
+            }
+        }
     },
     methods: {
+        showModal() {
+            this.consumeNo = ''
+            this.modalIsActive = true;
+            this.$refs.input.focus();
+        },
+        hideModal() {
+            this.modalIsActive = false;
+        },
+        resetText() {
+            this.consumeNo = ''
+        },
         focusInput() {
             this.$refs.consume.focus();
+        },
+        focusInputPopUp() {
+            this.$refs.consumeNo.focus();
         },
         showNotificationQtyProduct() {
             Swal.fire({
@@ -259,6 +355,10 @@ export default {
                 if (x.productBarcode == this.productBarcode) {
                     this.productQty = x.productQtyDone + 1
                     this.productName = x.productName
+                }else{
+                    this.showNotificationErrorNot()
+                    this.productName=""
+                    this.productBarcode=""
                 }
             });
         },
@@ -316,6 +416,9 @@ export default {
                     this.SourceLocation = ""
                     this.WoNumber = ""
                     this.CompanyId = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.showNotificationErrorNot()
                     localStorage.removeItem('token')
@@ -336,11 +439,14 @@ export default {
                                 status: '0'
                             })
                     });
+                    this.consumeId = response.data.data[0].consumeId;
+                    this.destinationId = response.data.data[0].LocationDestinationId;
+                    this.locationSourceId = response.data.data[0].LocationSourceId;
                     this.pickingId = response.data.data[0].pickingId;
                     this.SourceLocation = response.data.data[0].SourceLocation;
                     this.WoNumber = response.data.data[0].assignmentId;
                     this.CompanyId = response.data.data[0].CompanyId;
-                    // this.products = response.data.data[0].purchaseOrderLine;
+                    this.products = response.data.data[0].ConsumeLine;
                     this.ConsumeNumber = response.data.data[0].consumeNumber
                     this.MaterialNumber = response.data.data[0].MRID
                     this.AssetName = response.data.data[0].AssetId
@@ -353,6 +459,9 @@ export default {
                     this.SourceLocation = ""
                     this.WoNumber = ""
                     this.CompanyId = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.showNotificationToken()
                     localStorage.removeItem('token')
@@ -362,12 +471,173 @@ export default {
                     this.SourceLocation = ""
                     this.WoNumber = ""
                     this.CompanyId = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
                     this.items = [];
                     this.showNotificationErrorNot()
+                    this.consumeNumber=""
                 }
             })
         },
-
+        GetBarcodePopup() {
+            let data = {
+                'barcode': this.consumeNo
+            }
+            let token = localStorage.getItem('token')
+            axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
+            axios.post('/v1/scan/consume/', data).then(response => {
+                if (response.data.statusDesc == '401') {
+                    // console.log(response)
+                    this.pickingId = ""
+                    this.SourceLocation = ""
+                    this.WoNumber = ""
+                    this.CompanyId = ""
+                    this.AssetName = ""
+                    this.MaterialNumber = ""
+                    this.ReportDate = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
+                    this.items = [];
+                    this.products = []
+                    this.showNotificationErrorNot()
+                    localStorage.removeItem('token')
+                    this.$router.push('/')
+                } else {
+                    this.hideModal();
+                    response.data.data[0].ConsumeLine.forEach(x => {
+                        this.items.push(
+                            {
+                                productBarcode: x.productBarcode,
+                                productName: x.productName,
+                                productQtyDemand: x.productQtyDemand,
+                                productQtyDone: x.productQtyDone,
+                                productId: x.productId,
+                                consumeLineId: x.consumeLineId,
+                                moveLineId: x.moveLineId,
+                                moveId: x.moveId,
+                                status: '0'
+                            })
+                    });
+                    this.consumeId = response.data.data[0].consumeId;
+                    this.destinationId = response.data.data[0].LocationDestinationId;
+                    this.locationSourceId = response.data.data[0].LocationSourceId;
+                    this.pickingId = response.data.data[0].pickingId;
+                    this.SourceLocation = response.data.data[0].SourceLocation;
+                    this.WoNumber = response.data.data[0].assignmentId;
+                    this.CompanyId = response.data.data[0].CompanyId;
+                    this.products = response.data.data[0].ConsumeLine;
+                    this.ConsumeNumber = response.data.data[0].consumeNumber
+                    this.MaterialNumber = response.data.data[0].MRID
+                    this.AssetName = response.data.data[0].AssetId
+                    this.ReportDate = response.data.data[0].reportDate
+                }
+            }).catch(error => {
+                // console.log(error)
+                if (error.message == 'Request failed with status code 401') {
+                    this.pickingId = ""
+                    this.SourceLocation = ""
+                    this.WoNumber = ""
+                    this.CompanyId = ""
+                    this.AssetName = ""
+                    this.MaterialNumber = ""
+                    this.ReportDate = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
+                    this.items = [];
+                    this.products = []
+                    this.showNotificationToken()
+                    localStorage.removeItem('token')
+                    this.$router.push('/')
+                } else if (error.message == 'Request failed with status code 404') {
+                    this.pickingId = ""
+                    this.SourceLocation = ""
+                    this.WoNumber = ""
+                    this.CompanyId = ""
+                    this.AssetName = ""
+                    this.MaterialNumber = ""
+                    this.ReportDate = ""
+                    this.consumeId = ""
+                    this.destinationId = ""
+                    this.locationSourceId = ""
+                    this.items = [];
+                    this.products = []
+                    this.showNotificationErrorNot()
+                    this.consumeNo=""
+                }
+            })
+        },
+        openScanItem(){
+            this.productBarcode = ''
+            this.productName = ''
+            this.productQty = 1
+            $('#scanitem').addClass('show')
+            $('#scanitem').css({'display' : 'block'})
+            this.$refs.product.focus();
+        },
+        closeScanModal(){
+            this.productBarcode = ''
+            this.productName = ''
+            this.productQty = 1
+            $('#scanitem').removeClass('show')
+            $('#scanitem').css({'display' : 'none'})
+        },
+        MinQtyProductScan() {
+            this.productQty--;
+        },
+        MaxQtyProductScan() {
+            this.productQty++;
+        },
+        removeConsume(){
+            this.items = []
+            this.products = []
+            this.pickingId = ""
+            this.SourceLocation = ""
+            this.WoNumber = ""
+            this.CompanyId = ""
+            this.AssetName = ""
+            this.MaterialNumber = ""
+            this.ReportDate = ""
+            this.ConsumeNumber=""
+            this.consumeId = ""
+            this.destinationId = ""
+            this.locationSourceId = ""
+        },
+        validateProduct() {
+            let token = localStorage.getItem('token')
+            axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
+            let data = {
+                'pickingId': this.pickingId,
+                'consumeId': this.consumeId,
+                'LocationSourceId': this.locationSourceId,
+                'LocationDestinationId': this.destinationId,
+                'CompanyId': this.CompanyId,
+                'ConsumeLine': JSON.parse(JSON.stringify(this.items))
+            }
+           
+            axios.put('/v1/validate-consume/validate/', data).then(response => {
+                console.log(response)
+                if (response.data.statusCode == '200') {
+                    this.showNotificationSuccess()
+                    this.items = []
+                    this.products = []
+                    this.pickingId = ""
+                    this.SourceLocation = ""
+                    this.WoNumber = ""
+                    this.CompanyId = ""
+                    this.AssetName = ""
+                    this.MaterialNumber = ""
+                    this.ReportDate = ""
+                    this.ConsumeNumber=""
+                } else {
+                    alert('Somethig Went Wrong!')
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+        },
     },
 };
 </script>
@@ -426,4 +696,5 @@ export default {
     background-color: #e9ecef;
     border: 1px solid #ced4da;
     border-radius: 0.375rem;
-}</style>
+}
+</style>
