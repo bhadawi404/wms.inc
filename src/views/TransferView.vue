@@ -37,7 +37,7 @@
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Transfer Number</label>
                                 <input type="text" class="form-control" v-model="transferNumber" v-on:change="GetBarcode" ref="po"
-                                    placeholder="">
+                                    placeholder="" disabled="1">
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">Report Date</label>

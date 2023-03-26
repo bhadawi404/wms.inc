@@ -44,7 +44,9 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 * Partially Done Consume Issued
 
 ###### Consume Internal Transfer
-* Scan barcode Internal Transfer
-* Scan barcode Item Internal Transfer
-* Validate quantity Internal Transfer cannot exceed the quantity requested
-* Clear data Internal Transfer
+* Scan barcode Transfer Issued
+* Scan barcode Item Transfer Issued
+* Validate quantity Transfer cannot exceed the quantity requested
+* Validate Transfer Issued
+* Clear data Transfer Issued
+* Partially Done Transfer Issued
