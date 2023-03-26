@@ -254,6 +254,7 @@ export default {
             error: '',
             ponum: '',
             transferNumber: '',
+            TransferId: '',
             SourceLocation: '',
             reportDate: '',
             DestinationLocation: '',
@@ -396,12 +397,15 @@ export default {
                 if (x.productBarcode == this.productBarcode) {
                     done = '1'
                     new_items.push({ 
-                                productBarcode: x.productBarcode, 
+                        productBarcode: x.productBarcode, 
                                 productName: x.productName, 
-                                productQtyRequestTransfer: x.productQtyRequestTransfer, 
-                                productQtyDone: this.productQty, 
+                                productUom : x.productUom,
+                                productQtyDemand: x.productQtyDemand, 
+                                productQtyRequestTransfer: x.productQtyDemand,
+                                productQtyDone: this.productQty,
                                 productId: x.productId, 
                                 moveLineId: x.moveLineId, 
+                                productQtyReceived : x.productQtyReceived,
                                 moveId: x.moveId, 
                                 status: '1' 
                             })
@@ -409,12 +413,15 @@ export default {
                     new_items.push({ 
                                 productBarcode: x.productBarcode, 
                                 productName: x.productName, 
-                                productQtyRequestTransfer: x.productQtyRequestTransfer, 
+                                productUom : x.productUom,
+                                productQtyDemand: x.productQtyDemand, 
+                                productQtyRequestTransfer: x.productQtyDemand,
                                 productQtyDone: x.productQtyDone, 
                                 productId: x.productId, 
                                 moveLineId: x.moveLineId, 
+                                productQtyReceived : x.productQtyReceived,
                                 moveId: x.moveId, 
-                                status: x.status 
+                                status: x.status
                     })
                 }
             });
@@ -445,6 +452,7 @@ export default {
 
                     this.items = ""
                     this.transferNumber = ""
+                    this.TransferId = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
                     this.DestinationLocation = ""
@@ -458,11 +466,23 @@ export default {
                 } else {
                     this.items = []
 
+                    // "moveId": 1214,
+                    // "moveLineId": 886,
+                    // "productId": 180,
+                    // "productBarcode": "00327-35910-42225-AAOEM",
+                    // "productName": "[00327-35910-42225-AAOEM] Laptop (HP)",
+                    // "productUom": "Units",
+                    // "productQtyReceived": 2.0,
+                    // "productQtyDemand": 2.0,
+                    // "productQtyDone": 2.0
+
                     response.data.data[0].InternalTransferLine.forEach(x => {
                         this.items.push(
                             {   productBarcode: x.productBarcode, 
                                 productName: x.productName, 
-                                productQtyRequestTransfer: x.productQtyReceived, 
+                                productUom : x.productUom,
+                                productQtyDemand: x.productQtyDemand, 
+                                productQtyRequestTransfer: x.productQtyDemand,
                                 productQtyDone: x.productQtyDone, 
                                 productId: x.productId, 
                                 moveLineId: x.moveLineId, 
@@ -476,7 +496,8 @@ export default {
                     this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                     this.CompanyId= response.data.data[0].CompanyId;
                     // this.products = response.data.data[0].purchaseOrderLine;
-                    this.transferNumber = response.data.data[0].TransferId
+                    this.transferNumber = response.data.data[0].TransferNumber
+                    this.TransferId = response.data.data[0].TransferId
                     this.reportDate = response.data.data[0].ScheduleDate
                     this.SourceLocation = response.data.data[0].SourceLocation
                     this.DestinationLocation = response.data.data[0].DestinationLocation
@@ -524,7 +545,6 @@ export default {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             axios.post(url, data).then(response => {
-                alert(response.data.statusCodeDesc)
                 if (response.data.statusCodeDesc == '401') {
                     this.items = ""
                     this.transferNumber = ""
@@ -539,16 +559,19 @@ export default {
                     alert('Token has expired!!! Please Login Again')
                     this.$router.push('/')
                 } else {
+                    this.hideModal();
                     this.items = []
                     response.data.data[0].InternalTransferLine.forEach(x => {
                     this.items.push(
                         {   productBarcode: x.productBarcode, 
                             productName: x.productName, 
-                            productQtyRequestTransfer: x.productQtyReceived, 
+                            productUom : x.productUom,
+                            productQtyDemand: x.productQtyDemand, 
+                            productQtyRequestTransfer: x.productQtyDemand,
                             productQtyDone: x.productQtyDone, 
-                            productQtyReceived : x.productQtyReceived,
                             productId: x.productId, 
                             moveLineId: x.moveLineId, 
+                            productQtyReceived : x.productQtyReceived,
                             moveId: x.moveId, 
                             status: '0' 
                         })
@@ -558,10 +581,13 @@ export default {
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
-                this.transferNumber = response.data.data[0].TransferId
+                this.transferNumber = response.data.data[0].TransferNumber
+                this.TransferId = response.data.data[0].TransferId
                 this.reportDate = response.data.data[0].ScheduleDate
                 this.SourceLocation = response.data.data[0].SourceLocation
                 this.DestinationLocation = response.data.data[0].DestinationLocation
+
+
                 }
             }).catch(error => {
                 if (error.message == 'Request failed with status code 401') {
@@ -648,12 +674,14 @@ export default {
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             let data = {
-                'pickingId': this.pickingId,
+                "TransferId": this.TransferId,
+                'PickingId': this.pickingId,
                 'LocationSourceId': this.LocationSourceId,
                 'LocationDestinationId': this.LocationDestinationId,
                 'CompanyId': this.CompanyId,
                 'product': JSON.parse(JSON.stringify(this.items))
             }
+            
             let url="";
             if (this.configOptions == '1'){
                 url = '/v1/validate-Internal-transfer-out/validate/';
