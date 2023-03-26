@@ -8,6 +8,7 @@ import PurchaseOrder from '../views/PurchaseOrder.vue'
 import ScanScreen from '../views/ScanScreen.vue'
 import ConsumeView from '../views/ConsumeView.vue'
 import TransferView from '../views/TransferView.vue'
+import ReturnView from '../views/ReturnView.vue'
 
 
 const routes = [
@@ -69,6 +70,14 @@ const routes = [
     path: '/internal-transfer',
     name: 'internal-transfer',
     component: TransferView,
+    meta:{
+      requireLogin:true
+    }
+  },
+  {
+    path: '/return',
+    name: 'return',
+    component: ReturnView,
     meta:{
       requireLogin:true
     }

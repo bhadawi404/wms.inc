@@ -59,7 +59,7 @@
                         </div>
                         <div class="col-md-6 col-lg-6 col-sm-12 col-12">
                             <div class="barcode_card">
-                                <a href="javascript:void(0)" class="text-decoration-none">
+                                <a href="/return" class="text-decoration-none">
                                     <div class="icon_card">
                                         <img src="/assets/images/box.svg" alt="" title="" />
                                     </div>

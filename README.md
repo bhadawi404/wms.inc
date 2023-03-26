@@ -43,10 +43,16 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 * Clear data Consume Issued
 * Partially Done Consume Issued
 
-###### Consume Internal Transfer
-* Scan barcode Transfer Issued
-* Scan barcode Item Transfer Issued
+###### Internal Transfer
+* Scan barcode Transfer 
+* Scan barcode Item Transfer 
 * Validate quantity Transfer cannot exceed the quantity requested
-* Validate Transfer Issued
+* Validate Transfer 
+* Clear data Transfer 
+* Partially Done Transfer 
+
+###### Return
+* Scan barcode Return
+* Scan barcode Item Return
+* Validate quantity Return cannot exceed the quantity requested
 * Clear data Transfer Issued
-* Partially Done Transfer Issued
