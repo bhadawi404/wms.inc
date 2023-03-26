@@ -555,7 +555,8 @@ export default {
                     this.items = [];
                     this.products = []
                     this.showNotificationErrorNot()
-                    this.consumeNo=""
+                    this.returnNo=""
+                    
                 }
             })
         },
@@ -620,8 +621,9 @@ export default {
                     this.CompanyId = ""
                     this.AssetName = ""
                     this.MaterialNumber = ""
-                    this.ReportDate = ""
                     this.ReturnNumber=""
+                    this.ReturnDate=""
+                    this.SourceLocation=""
                 } else {
                     alert('Somethig Went Wrong!')
                 }
