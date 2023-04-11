@@ -604,17 +604,16 @@ export default {
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
                 alert(response.data.data[0].state)
-                st=''
                     if(response.data.data[0].state=='approved'){
-                        st='Approved';
+                        this.state='Approved';
                     }else if(response.data.data[0].state=='partially_transfered'){
-                        st='Partially Transfered';
+                        this.state='Partially Transfered';
                     }else if(response.data.data[0].state=='transfered'){
-                        st='Transfered';
+                        this.state='Transfered';
                     }else if(response.data.data[0].state=='partially_received'){
-                        st='Partially Received';
+                        this.state='Partially Received';
                     }
-                alert(st)
+                alert('bisa')
                 this.state= st
                 this.transferNumber = response.data.data[0].TransferNumber
                 this.TransferId = response.data.data[0].TransferId
@@ -696,17 +695,15 @@ export default {
                     this.errorInItem = true
                     this.openCamera = false
                 } else {
-                    st='';
                     if(response.data.data[0].state=='approved'){
-                        st='Approved';
+                        this.state='Approved';
                     }else if(response.data.data[0].state=='partially_transfered'){
-                        st='Partially Transfered';
+                        this.state='Partially Transfered';
                     }else if(response.data.data[0].state=='transfered'){
-                        st='Transfered';
+                        this.state='Transfered';
                     }else if(response.data.data[0].state=='partially_received'){
-                        st='Partially Received';
+                        this.state='Partially Received';
                     }
-                    this.state= st
                     this.items = response.data.data[0].InternalTransferLine;
                     this.transferNumber = response.data.data[0].pickingId
                     this.reportDate = response.data.data[0].reportDate
