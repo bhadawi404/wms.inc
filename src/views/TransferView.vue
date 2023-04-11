@@ -597,7 +597,6 @@ export default {
                             status: '0' 
                         })
                 });
-                alert("masuk");
                 this.pickingId = response.data.data[0].PickingId;
                 this.LocationSourceId= response.data.data[0].LocationSourceId;
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
