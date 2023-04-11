@@ -31,6 +31,8 @@
                                 <option value="1">Barang Keluar</option>
                                 <option value="2">Barang Masuk</option>
                             </select>
+                            State : <input type="text" class="form-control" v-model="state" 
+                                    placeholder="" disabled="1">
                         </div>
 
                         <div class="row purchase_form mt-5">
@@ -253,6 +255,7 @@ export default {
             result: '',
             error: '',
             ponum: '',
+            state:'',
             transferNumber: '',
             TransferId: '',
             SourceLocation: '',
@@ -449,7 +452,7 @@ export default {
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             axios.post(url, data).then(response => {
                 if (response.data.statusCodeDesc == '401') {
-
+                    this.state=''
                     this.items = ""
                     this.transferNumber = ""
                     this.TransferId = ""
@@ -496,6 +499,17 @@ export default {
                     this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                     this.CompanyId= response.data.data[0].CompanyId;
                     // this.products = response.data.data[0].purchaseOrderLine;
+                    st='';
+                    if(response.data.data[0].TransferNumber=='approved'){
+                        st='Approved';
+                    }else if(response.data.data[0].TransferNumber=='partially_transfered'){
+                        st='Partially Transfered';
+                    }else if(response.data.data[0].TransferNumber=='transfered'){
+                        st='Transfered';
+                    }else if(response.data.data[0].TransferNumber=='partially_received'){
+                        st='Partially Received';
+                    }
+                    this.state= st
                     this.transferNumber = response.data.data[0].TransferNumber
                     this.TransferId = response.data.data[0].TransferId
                     this.reportDate = response.data.data[0].ScheduleDate
@@ -509,6 +523,7 @@ export default {
                     this.LocationDestinationId= ""
                     this.CompanyId= ""
                     this.items = ""
+                    this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
@@ -523,6 +538,7 @@ export default {
                     this.LocationDestinationId= ""
                     this.CompanyId= ""
                     this.items = ""
+                    this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
@@ -547,6 +563,7 @@ export default {
             axios.post(url, data).then(response => {
                 if (response.data.statusCodeDesc == '401') {
                     this.items = ""
+                    this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
@@ -581,6 +598,17 @@ export default {
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
+                st='';
+                    if(response.data.data[0].TransferNumber=='approved'){
+                        st='Approved';
+                    }else if(response.data.data[0].TransferNumber=='partially_transfered'){
+                        st='Partially Transfered';
+                    }else if(response.data.data[0].TransferNumber=='transfered'){
+                        st='Transfered';
+                    }else if(response.data.data[0].TransferNumber=='partially_received'){
+                        st='Partially Received';
+                    }
+                this.state= st
                 this.transferNumber = response.data.data[0].TransferNumber
                 this.TransferId = response.data.data[0].TransferId
                 this.reportDate = response.data.data[0].ScheduleDate
@@ -597,6 +625,7 @@ export default {
                     this.CompanyId= ""
                     this.items = ""
                     this.transferNumber = ""
+                    this.state=''
                     this.reportDate = ""
                     this.SourceLocation = ""
                     this.DestinationLocation = ""
@@ -610,6 +639,7 @@ export default {
                     this.LocationDestinationId= ""
                     this.CompanyId= ""
                     this.items = ""
+                    this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
@@ -659,6 +689,17 @@ export default {
                     this.errorInItem = true
                     this.openCamera = false
                 } else {
+                    st='';
+                    if(response.data.data[0].TransferNumber=='approved'){
+                        st='Approved';
+                    }else if(response.data.data[0].TransferNumber=='partially_transfered'){
+                        st='Partially Transfered';
+                    }else if(response.data.data[0].TransferNumber=='transfered'){
+                        st='Transfered';
+                    }else if(response.data.data[0].TransferNumber=='partially_received'){
+                        st='Partially Received';
+                    }
+                    this.state= st
                     this.items = response.data.data[0].InternalTransferLine;
                     this.transferNumber = response.data.data[0].pickingId
                     this.reportDate = response.data.data[0].reportDate
@@ -693,6 +734,7 @@ export default {
                 if (response.data.statusCode == '200') {
                     this.showNotificationSuccess()
                     this.pickingId = ""
+                    this.state=""
                     this.LocationSourceId= ""
                     this.LocationDestinationId= ""
                     this.CompanyId= ""
@@ -781,6 +823,7 @@ export default {
             this.reportDate = ""
             this.SourceLocation = ""
             this.DestinationLocation = ""
+            this.state=""
         },
         openScanItem(){
             this.productBarcode = ''
