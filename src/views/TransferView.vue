@@ -603,7 +603,7 @@ export default {
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
-                alert(response.data.data[0])
+                alert(response.data.data[0].state)
                 st=''
                     if(response.data.data[0].state=='approved'){
                         st='Approved';
