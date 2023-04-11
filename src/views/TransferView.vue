@@ -603,6 +603,7 @@ export default {
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
+                alert(response.data.data[0])
                 st=''
                     if(response.data.data[0].state=='approved'){
                         st='Approved';
@@ -613,6 +614,7 @@ export default {
                     }else if(response.data.data[0].state=='partially_received'){
                         st='Partially Received';
                     }
+                alert(st)
                 this.state= st
                 this.transferNumber = response.data.data[0].TransferNumber
                 this.TransferId = response.data.data[0].TransferId
