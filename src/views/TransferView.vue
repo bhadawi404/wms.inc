@@ -31,8 +31,7 @@
                                 <option value="1">Barang Keluar</option>
                                 <option value="2">Barang Masuk</option>
                             </select>
-                            State : <input type="text" class="form-control" v-model="state" 
-                                    placeholder="" disabled="1">
+                            
                         </div>
 
                         <div class="row purchase_form mt-5">
@@ -54,6 +53,11 @@
                                 <label class="form-label">Destination Location</label>
                                 <input type="text" class="form-control" v-model="DestinationLocation" id="" placeholder=""
                                     disabled="1">
+                            </div>
+                            <div class="col-md-6 col-sm-12 col-12">
+                                <label class="form-label">State</label>
+                            <input type="text" class="form-control" v-model="state" 
+                                    placeholder="" disabled="1">
                             </div>
                         </div>
                         <div class="table-responsive">
