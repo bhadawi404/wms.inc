@@ -603,7 +603,6 @@ export default {
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
-                alert(response.data.data[0].state)
                     if(response.data.data[0].state=='approved'){
                         this.state='Approved';
                     }else if(response.data.data[0].state=='partially_transfered'){
@@ -612,8 +611,9 @@ export default {
                         this.state='Transfered';
                     }else if(response.data.data[0].state=='partially_received'){
                         this.state='Partially Received';
+                    }else{
+                        this.state=response.data.data[0].state;
                     }
-                alert('bisa')
                 this.transferNumber = response.data.data[0].TransferNumber
                 this.TransferId = response.data.data[0].TransferId
                 this.reportDate = response.data.data[0].ScheduleDate
