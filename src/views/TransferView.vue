@@ -597,19 +597,20 @@ export default {
                             status: '0' 
                         })
                 });
+                alert("masuk");
                 this.pickingId = response.data.data[0].PickingId;
                 this.LocationSourceId= response.data.data[0].LocationSourceId;
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
-                st='';
-                    if(response.data.data[0].TransferNumber=='approved'){
+                st=''
+                    if(response.data.data[0].state=='approved'){
                         st='Approved';
-                    }else if(response.data.data[0].TransferNumber=='partially_transfered'){
+                    }else if(response.data.data[0].state=='partially_transfered'){
                         st='Partially Transfered';
-                    }else if(response.data.data[0].TransferNumber=='transfered'){
+                    }else if(response.data.data[0].state=='transfered'){
                         st='Transfered';
-                    }else if(response.data.data[0].TransferNumber=='partially_received'){
+                    }else if(response.data.data[0].state=='partially_received'){
                         st='Partially Received';
                     }
                 this.state= st
@@ -694,13 +695,13 @@ export default {
                     this.openCamera = false
                 } else {
                     st='';
-                    if(response.data.data[0].TransferNumber=='approved'){
+                    if(response.data.data[0].state=='approved'){
                         st='Approved';
-                    }else if(response.data.data[0].TransferNumber=='partially_transfered'){
+                    }else if(response.data.data[0].state=='partially_transfered'){
                         st='Partially Transfered';
-                    }else if(response.data.data[0].TransferNumber=='transfered'){
+                    }else if(response.data.data[0].state=='transfered'){
                         st='Transfered';
-                    }else if(response.data.data[0].TransferNumber=='partially_received'){
+                    }else if(response.data.data[0].state=='partially_received'){
                         st='Partially Received';
                     }
                     this.state= st
