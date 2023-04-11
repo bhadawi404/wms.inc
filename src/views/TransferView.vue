@@ -614,7 +614,6 @@ export default {
                         this.state='Partially Received';
                     }
                 alert('bisa')
-                this.state= st
                 this.transferNumber = response.data.data[0].TransferNumber
                 this.TransferId = response.data.data[0].TransferId
                 this.reportDate = response.data.data[0].ScheduleDate
