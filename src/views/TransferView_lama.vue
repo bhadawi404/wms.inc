@@ -27,6 +27,10 @@
                                 data-bs-toggle="modal" data-bs-target="#scanTransfer">
                                 Scan Transfer Number
                             </a>
+                            <select v-model="configOptions" class="scan_btn ms-4" v-on:change="removeOrder">
+                                <option value="1">Barang Keluar</option>
+                                <option value="2">Barang Masuk</option>
+                            </select>
                             
                         </div>
 
@@ -52,7 +56,7 @@
                             </div>
                             <div class="col-md-6 col-sm-12 col-12">
                                 <label class="form-label">State</label>
-                            <input type="text" class="form-control" v-model="stateShow" 
+                            <input type="text" class="form-control" v-model="state" 
                                     placeholder="" disabled="1">
                             </div>
                         </div>
@@ -256,7 +260,6 @@ export default {
             error: '',
             ponum: '',
             state:'',
-            stateShow:'',
             transferNumber: '',
             TransferId: '',
             SourceLocation: '',
@@ -442,14 +445,18 @@ export default {
             let data = {
                 'barcode': this.transferNumber
             }
+            let url="";
+            if (this.configOptions == '1'){
+                url = '/v1/scan/internal-transfer-out/';
+            }else{
+                url = '/v1/scan/internal-transfer-in/';
+            }
             
-            let url = '/v1/scan/internal-transfer/';
-
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             axios.post(url, data).then(response => {
                 if (response.data.statusCodeDesc == '401') {
-                    this.stateShow=''
+                    this.state=''
                     this.items = ""
                     this.transferNumber = ""
                     this.TransferId = ""
@@ -465,6 +472,16 @@ export default {
                     this.$router.push('/')
                 } else {
                     this.items = []
+
+                    // "moveId": 1214,
+                    // "moveLineId": 886,
+                    // "productId": 180,
+                    // "productBarcode": "00327-35910-42225-AAOEM",
+                    // "productName": "[00327-35910-42225-AAOEM] Laptop (HP)",
+                    // "productUom": "Units",
+                    // "productQtyReceived": 2.0,
+                    // "productQtyDemand": 2.0,
+                    // "productQtyDone": 2.0
 
                     response.data.data[0].InternalTransferLine.forEach(x => {
                         this.items.push(
@@ -487,17 +504,16 @@ export default {
                     this.CompanyId= response.data.data[0].CompanyId;
                     // this.products = response.data.data[0].purchaseOrderLine;
                     st='';
-                    if(response.data.data[0].state=='approved'){
+                    if(response.data.data[0].TransferNumber=='approved'){
                         st='Approved';
-                    }else if(response.data.data[0].state=='partially_transfered'){
+                    }else if(response.data.data[0].TransferNumber=='partially_transfered'){
                         st='Partially Transfered';
-                    }else if(response.data.data[0].state=='transfered'){
+                    }else if(response.data.data[0].TransferNumber=='transfered'){
                         st='Transfered';
-                    }else if(response.data.data[0].state=='partially_received'){
+                    }else if(response.data.data[0].TransferNumber=='partially_received'){
                         st='Partially Received';
                     }
-                    this.state = response.data.data[0].state
-                    this.stateShow= st
+                    this.state= st
                     this.transferNumber = response.data.data[0].TransferNumber
                     this.TransferId = response.data.data[0].TransferId
                     this.reportDate = response.data.data[0].ScheduleDate
@@ -511,7 +527,6 @@ export default {
                     this.LocationDestinationId= ""
                     this.CompanyId= ""
                     this.items = ""
-                    this.stateShow=''
                     this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
@@ -525,10 +540,9 @@ export default {
                     this.pickingId = ""
                     this.LocationSourceId= ""
                     this.LocationDestinationId= ""
-                    this.state=''
                     this.CompanyId= ""
                     this.items = ""
-                    this.stateShow=''
+                    this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
@@ -542,14 +556,18 @@ export default {
             let data = {
                 'barcode': this.ponum
             }
-            let url = '/v1/scan/internal-transfer/';
-          
+            let url="";
+            if (this.configOptions == '1'){
+                url = '/v1/scan/internal-transfer-out/';
+            }else{
+                url = '/v1/scan/internal-transfer-in/';
+            }
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             axios.post(url, data).then(response => {
                 if (response.data.statusCodeDesc == '401') {
                     this.items = ""
-                    this.stateShow=''
+                    this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
@@ -584,16 +602,17 @@ export default {
                 this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                 this.CompanyId= response.data.data[0].CompanyId;
                 // this.products = response.data.data[0].purchaseOrderLine;
-                if(response.data.data[0].state=='approved'){
-                    this.stateShow='Approved';
-                }else if(response.data.data[0].state=='partially_transfered'){
-                    this.stateShow='Partially Transfered';
-                }else if(response.data.data[0].state=='transfered'){
-                    this.stateShow='Transfered';
-                }else if(response.data.data[0].state=='partially_received'){
-                    this.stateShow='Partially Received';
-                }
-                this.state = response.data.data[0].state
+                    if(response.data.data[0].state=='approved'){
+                        this.state='Approved';
+                    }else if(response.data.data[0].state=='partially_transfered'){
+                        this.state='Partially Transfered';
+                    }else if(response.data.data[0].state=='transfered'){
+                        this.state='Transfered';
+                    }else if(response.data.data[0].state=='partially_received'){
+                        this.state='Partially Received';
+                    }else{
+                        this.state=response.data.data[0].state;
+                    }
                 this.transferNumber = response.data.data[0].TransferNumber
                 this.TransferId = response.data.data[0].TransferId
                 this.reportDate = response.data.data[0].ScheduleDate
@@ -607,11 +626,10 @@ export default {
                     this.pickingId = ""
                     this.LocationSourceId= ""
                     this.LocationDestinationId= ""
-                    this.state = ''
                     this.CompanyId= ""
                     this.items = ""
                     this.transferNumber = ""
-                    this.stateShow=''
+                    this.state=''
                     this.reportDate = ""
                     this.SourceLocation = ""
                     this.DestinationLocation = ""
@@ -621,12 +639,11 @@ export default {
                     this.$router.push('/')
                 } else if (error.message == 'Request failed with status code 404') {
                     this.pickingId = ""
-                    this.state = ''
                     this.LocationSourceId= ""
                     this.LocationDestinationId= ""
                     this.CompanyId= ""
                     this.items = ""
-                    this.stateShow=''
+                    this.state=''
                     this.transferNumber = ""
                     this.reportDate = ""
                     this.SourceLocation = ""
@@ -670,22 +687,21 @@ export default {
             }
             let token = localStorage.getItem('token')
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
-            axios.post('/v1/scan/internal-transfer/', data).then(response => {
+            axios.post('/v1/scan/internal-transfer-out/', data).then(response => {
                 console.log(response.data.data[0].purchaseOrderLine)
                 if (response.data.statusCode == '404') {
                     this.errorInItem = true
                     this.openCamera = false
                 } else {
                     if(response.data.data[0].state=='approved'){
-                    this.stateShow='Approved';
+                        this.state='Approved';
                     }else if(response.data.data[0].state=='partially_transfered'){
-                        this.stateShow='Partially Transfered';
+                        this.state='Partially Transfered';
                     }else if(response.data.data[0].state=='transfered'){
-                        this.stateShow='Transfered';
+                        this.state='Transfered';
                     }else if(response.data.data[0].state=='partially_received'){
-                        this.stateShow='Partially Received';
+                        this.state='Partially Received';
                     }
-                    this.state = response.data.data[0].state
                     this.items = response.data.data[0].InternalTransferLine;
                     this.transferNumber = response.data.data[0].pickingId
                     this.reportDate = response.data.data[0].reportDate
@@ -702,7 +718,6 @@ export default {
             axios.defaults.headers.common = { 'Authorization': `Bearer ` + token }
             let data = {
                 "TransferId": this.TransferId,
-                "state": this.state,
                 'PickingId': this.pickingId,
                 'LocationSourceId': this.LocationSourceId,
                 'LocationDestinationId': this.LocationDestinationId,
@@ -710,14 +725,17 @@ export default {
                 'product': JSON.parse(JSON.stringify(this.items))
             }
             
-            let url='/v1/validate-Internal-transfer/validate/';
-            
+            let url="";
+            if (this.configOptions == '1'){
+                url = '/v1/validate-Internal-transfer-out/validate/';
+            }else{
+                url = '/v1/validate-Internal-transfer-in/validate/';
+            }
             axios.put(url, data).then(response => {
                 console.log(data)
                 if (response.data.statusCode == '200') {
                     this.showNotificationSuccess()
                     this.pickingId = ""
-                    this.stateShow=""
                     this.state=""
                     this.LocationSourceId= ""
                     this.LocationDestinationId= ""
@@ -807,7 +825,7 @@ export default {
             this.reportDate = ""
             this.SourceLocation = ""
             this.DestinationLocation = ""
-            this.stateShow=""
+            this.state=""
         },
         openScanItem(){
             this.productBarcode = ''
