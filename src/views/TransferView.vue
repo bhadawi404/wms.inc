@@ -486,7 +486,7 @@ export default {
                     this.LocationDestinationId= response.data.data[0].LocationDestinationId;
                     this.CompanyId= response.data.data[0].CompanyId;
                     // this.products = response.data.data[0].purchaseOrderLine;
-                    st='';
+                    let st='';
                     if(response.data.data[0].state=='approved'){
                         st='Approved';
                     }else if(response.data.data[0].state=='partially_transfered'){
